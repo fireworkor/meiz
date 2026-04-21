@@ -1,0 +1,25 @@
+package com.beautyshop.repository;
+
+import com.beautyshop.entity.Commission;
+import com.beautyshop.entity.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+@Repository
+public interface CommissionRepository extends JpaRepository<Commission, Long> {
+    List<Commission> findByEmployee(Employee employee);
+
+    @Query("SELECT c FROM Commission c WHERE c.employee = :employee AND c.commissionDate BETWEEN :startDate AND :endDate")
+    List<Commission> findByEmployeeAndDateRange(@Param("employee") Employee employee, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT c FROM Commission c WHERE c.status = :status")
+    List<Commission> findByStatus(@Param("status") String status);
+
+    @Query("SELECT SUM(c.amount) FROM Commission c WHERE c.employee = :employee AND c.commissionDate BETWEEN :startDate AND :endDate")
+    BigDecimal sumAmountByEmployeeAndDateRange(@Param("employee") Employee employee, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+}

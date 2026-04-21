@@ -15,7 +15,11 @@
       </div>
       <div class="menu-item" @click="navigateTo('attendance')">
         <div class="menu-icon">📍</div>
-        <div class="menu-label">考勤打卡</div>
+        <div class="menu-label">考勤管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('salary')">
+        <div class="menu-icon">💵</div>
+        <div class="menu-label">薪酬管理</div>
       </div>
       <div class="menu-item" @click="navigateTo('shift')">
         <div class="menu-icon">🔄</div>
@@ -64,6 +68,14 @@
       <div class="menu-item" @click="navigateTo('coupon')">
         <div class="menu-icon">🎫</div>
         <div class="menu-label">卡券管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('verification')">
+        <div class="menu-icon">✓</div>
+        <div class="menu-label">核销管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('grouppurchase')">
+        <div class="menu-icon">🏷️</div>
+        <div class="menu-label">本地生活团购</div>
       </div>
       <div class="menu-item" @click="navigateTo('marketing')">
         <div class="menu-icon">📢</div>
@@ -124,6 +136,18 @@ export default {
           break
         case 'marketing':
           this.$router.push('/admin/marketing/list')
+          break
+        case 'attendance':
+          this.$router.push('/admin/attendance')
+          break
+        case 'salary':
+          this.$router.push('/admin/salary')
+          break
+        case 'verification':
+          this.$router.push('/admin/verification')
+          break
+        case 'grouppurchase':
+          this.$router.push('/admin/grouppurchase')
           break
         default:
           alert(`${page}功能开发中`)

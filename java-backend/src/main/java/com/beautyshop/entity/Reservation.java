@@ -22,7 +22,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    private BeautyService service;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

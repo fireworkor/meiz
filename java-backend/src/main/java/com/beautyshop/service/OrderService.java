@@ -5,6 +5,7 @@ import com.beautyshop.entity.OrderItem;
 import com.beautyshop.entity.Customer;
 import com.beautyshop.entity.Employee;
 import com.beautyshop.repository.OrderRepository;
+import com.beautyshop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
@@ -16,10 +17,13 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     public Order createOrder(Order order) {
         order.setOrderDate(new Date());
         order.setStatus("待支付");
-        
+
         // 计算总金额
         double totalAmount = 0;
         for (OrderItem item : order.getOrderItems()) {
@@ -27,7 +31,7 @@ public class OrderService {
             item.setOrder(order);
         }
         order.setTotalAmount(totalAmount);
-        
+
         return orderRepository.save(order);
     }
 
@@ -37,6 +41,11 @@ public class OrderService {
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    public List<Order> getOrdersByCustomer(Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        return customer.map(orderRepository::findByCustomer).orElse(null);
     }
 
     public List<Order> getOrdersByCustomer(Customer customer) {
@@ -53,6 +62,14 @@ public class OrderService {
 
     public List<Order> getOrdersByStatus(String status) {
         return orderRepository.findByStatus(status);
+    }
+
+    public Order saveOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
+    public void deleteOrder(Long id) {
+        orderRepository.deleteById(id);
     }
 
     public Order updateOrderStatus(Long id, String status) {

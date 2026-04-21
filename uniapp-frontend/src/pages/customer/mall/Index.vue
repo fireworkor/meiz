@@ -163,14 +163,14 @@ export default {
       // 搜索逻辑已在computed中处理
     },
     viewProductDetail(productId) {
-      uni.showToast({ title: `查看商品详情 ${productId}`, icon: 'none' })
+      this.$router.push(`/customer/mall/product?id=${productId}`)
     },
     addToCart(productId) {
       this.cartCount++
       uni.showToast({ title: '已加入购物车', icon: 'success' })
     },
     goToCheckout() {
-      uni.showToast({ title: '去结算功能开发中', icon: 'none' })
+      this.$router.push('/customer/cart')
     },
     goBack() {
       this.$router.push('/customer/dashboard')

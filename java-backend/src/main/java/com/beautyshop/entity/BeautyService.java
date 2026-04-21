@@ -7,27 +7,20 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "employees")
-public class Employee {
+@Table(name = "services")
+public class BeautyService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     private String name;
-    private String phone;
-    private String position;
-    private Date entryDate;
-    private String employeeId;
-    private String idCard;
-    private String emergencyContact;
-    private String emergencyPhone;
-    private String status;
-    private String skillTags;
-    private BigDecimal baseSalary = BigDecimal.ZERO;
+    private String category;
+    private BigDecimal price = BigDecimal.ZERO;
+    private Integer duration = 60;
+    private String description;
+    private String image;
+    private BigDecimal commissionRate = new BigDecimal("10.00");
+    private String status = "active";
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

@@ -16,6 +16,11 @@ public class Customer {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String name;
+    private String phone;
+    private String level;
+    private Integer points;
+
     private Date birthday;
     private String gender;
     private String wechat;

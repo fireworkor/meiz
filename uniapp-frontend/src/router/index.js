@@ -31,6 +31,10 @@ import CouponList from '../pages/admin/coupon/List.vue'
 import CouponAdd from '../pages/admin/coupon/Add.vue'
 import MarketingList from '../pages/admin/marketing/List.vue'
 import MarketingAdd from '../pages/admin/marketing/Add.vue'
+import AdminAttendance from '../pages/admin/attendance/Index.vue'
+import AdminSalary from '../pages/admin/salary/Index.vue'
+import AdminVerification from '../pages/admin/verification/Index.vue'
+import AdminGroupPurchase from '../pages/admin/grouppurchase/Index.vue'
 import StaffAttendance from '../pages/staff/attendance/Index.vue'
 import TodayReservation from '../pages/staff/reservation/Today.vue'
 import StaffPerformance from '../pages/staff/performance/Index.vue'
@@ -40,6 +44,10 @@ import StaffShiftApply from '../pages/staff/shift/Apply.vue'
 import StaffNotifications from '../pages/staff/notifications/Index.vue'
 import CustomerProfile from '../pages/customer/profile/Index.vue'
 import CustomerMall from '../pages/customer/mall/Index.vue'
+import ProductDetail from '../pages/customer/mall/ProductDetail.vue'
+import CustomerCart from '../pages/customer/cart/Index.vue'
+import OrderConfirm from '../pages/customer/order/Confirm.vue'
+import OrderList from '../pages/customer/order/List.vue'
 import CustomerPoints from '../pages/customer/points/Index.vue'
 import CustomerActivities from '../pages/customer/activities/Index.vue'
 import CustomerEvaluation from '../pages/customer/evaluation/Index.vue'
@@ -48,6 +56,8 @@ import CustomerPromoter from '../pages/customer/promoter/Index.vue'
 import CustomerReservationCreate from '../pages/customer/reservation/Create.vue'
 import CustomerReservationList from '../pages/customer/reservation/List.vue'
 import CustomerConsumption from '../pages/customer/Consumption.vue'
+import CustomerVerification from '../pages/customer/verification/Index.vue'
+import CustomerGroupPurchase from '../pages/customer/grouppurchase/Index.vue'
 
 Vue.use(VueRouter)
 
@@ -217,6 +227,26 @@ const routes = [
     component: MarketingAdd
   },
   {
+    path: '/admin/attendance',
+    name: 'AdminAttendance',
+    component: AdminAttendance
+  },
+  {
+    path: '/admin/salary',
+    name: 'AdminSalary',
+    component: AdminSalary
+  },
+  {
+    path: '/admin/verification',
+    name: 'AdminVerification',
+    component: AdminVerification
+  },
+  {
+    path: '/admin/grouppurchase',
+    name: 'AdminGroupPurchase',
+    component: AdminGroupPurchase
+  },
+  {
     path: '/staff/attendance',
     name: 'StaffAttendance',
     component: StaffAttendance
@@ -262,6 +292,26 @@ const routes = [
     component: CustomerMall
   },
   {
+    path: '/customer/mall/product',
+    name: 'ProductDetail',
+    component: ProductDetail
+  },
+  {
+    path: '/customer/cart',
+    name: 'CustomerCart',
+    component: CustomerCart
+  },
+  {
+    path: '/customer/order/confirm',
+    name: 'OrderConfirm',
+    component: OrderConfirm
+  },
+  {
+    path: '/customer/order/list',
+    name: 'OrderList',
+    component: OrderList
+  },
+  {
     path: '/customer/points',
     name: 'CustomerPoints',
     component: CustomerPoints
@@ -300,6 +350,16 @@ const routes = [
     path: '/customer/consumption',
     name: 'CustomerConsumption',
     component: CustomerConsumption
+  },
+  {
+    path: '/customer/verification',
+    name: 'CustomerVerification',
+    component: CustomerVerification
+  },
+  {
+    path: '/customer/grouppurchase',
+    name: 'CustomerGroupPurchase',
+    component: CustomerGroupPurchase
   }
 ]
 

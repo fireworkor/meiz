@@ -14,6 +14,8 @@ import java.util.List;
 public interface CommissionRepository extends JpaRepository<Commission, Long> {
     List<Commission> findByEmployee(Employee employee);
 
+    List<Commission> findByEmployeeAndStatus(@Param("employee") Employee employee, @Param("status") String status);
+
     @Query("SELECT c FROM Commission c WHERE c.employee = :employee AND c.commissionDate BETWEEN :startDate AND :endDate")
     List<Commission> findByEmployeeAndDateRange(@Param("employee") Employee employee, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 

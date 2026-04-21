@@ -45,6 +45,14 @@
         <div class="menu-icon">📣</div>
         <div class="menu-label">推广员功能</div>
       </div>
+      <div class="menu-item" @click="navigateTo('verification')">
+        <div class="menu-icon">✓</div>
+        <div class="menu-label">我的核销码</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('grouppurchase')">
+        <div class="menu-icon">🏷️</div>
+        <div class="menu-label">本地生活团购</div>
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +96,12 @@ export default {
           break
         case 'promoter':
           this.$router.push('/customer/promoter')
+          break
+        case 'verification':
+          this.$router.push('/customer/verification')
+          break
+        case 'grouppurchase':
+          this.$router.push('/customer/grouppurchase')
           break
         default:
           alert(`${page}功能开发中`)

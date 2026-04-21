@@ -67,11 +67,95 @@ export const orderAPI = {
   getById(id) {
     return request.get(`/orders/${id}`)
   },
+  getByCustomer(customerId) {
+    return request.get(`/orders/customer/${customerId}`)
+  },
+  getByStatus(status) {
+    return request.get(`/orders/status/${status}`)
+  },
   create(data) {
     return request.post('/orders', data)
   },
+  checkout(data) {
+    return request.post('/orders/checkout', data)
+  },
   updateStatus(id, status) {
     return request.put(`/orders/${id}/status?status=${status}`)
+  },
+  pay(id, paymentMethod) {
+    return request.put(`/orders/${id}/pay?paymentMethod=${paymentMethod}`)
+  },
+  delete(id) {
+    return request.delete(`/orders/${id}`)
+  }
+}
+
+export const serviceAPI = {
+  getAll() {
+    return request.get('/services')
+  },
+  getById(id) {
+    return request.get(`/services/${id}`)
+  },
+  getByCategory(category) {
+    return request.get(`/services/category/${category}`)
+  },
+  getByStatus(status) {
+    return request.get(`/services/status/${status}`)
+  },
+  search(name) {
+    return request.get(`/services/search?name=${name}`)
+  },
+  create(data) {
+    return request.post('/services', data)
+  },
+  update(id, data) {
+    return request.put(`/services/${id}`, data)
+  },
+  delete(id) {
+    return request.delete(`/services/${id}`)
+  },
+  updateStatus(id, status) {
+    return request.put(`/services/${id}/status?status=${status}`)
+  }
+}
+
+export const salaryAPI = {
+  getAll() {
+    return request.get('/salaries')
+  },
+  getById(id) {
+    return request.get(`/salaries/${id}`)
+  },
+  getByEmployee(employeeId) {
+    return request.get(`/salaries/employee/${employeeId}`)
+  },
+  getByYearMonth(year, month) {
+    return request.get(`/salaries/year-month?year=${year}&month=${month}`)
+  },
+  getByStatus(status) {
+    return request.get(`/salaries/status/${status}`)
+  },
+  calculate(employeeId, year, month) {
+    return request.post(`/salaries/calculate?employeeId=${employeeId}&year=${year}&month=${month}`)
+  },
+  calculateAll(year, month) {
+    return request.post(`/salaries/calculate-all?year=${year}&month=${month}`)
+  },
+  pay(id) {
+    return request.post(`/salaries/${id}/pay`)
+  },
+  batchPay(salaryIds) {
+    return request.post('/salaries/batch-pay', salaryIds)
+  },
+  create(data) {
+    return request.post('/salaries', data)
+  },
+  update(id, data) {
+    return request.put(`/salaries/${id}`, data)
+  },
+  delete(id) {
+    return request.delete(`/salaries/${id}`)
   }
 }
 
@@ -345,5 +429,77 @@ export const marketingActivityAPI = {
   },
   getByStatus(status) {
     return request.get(`/marketing-activities/status/${status}`)
+  }
+}
+
+export const verificationAPI = {
+  getAll() {
+    return request.get('/verifications')
+  },
+  getById(id) {
+    return request.get(`/verifications/${id}`)
+  },
+  getByCode(code) {
+    return request.get(`/verifications/code/${code}`)
+  },
+  getByCustomer(customerId) {
+    return request.get(`/verifications/customer/${customerId}`)
+  },
+  getByStatus(status) {
+    return request.get(`/verifications/status/${status}`)
+  },
+  getByType(type) {
+    return request.get(`/verifications/type/${type}`)
+  },
+  getStats() {
+    return request.get('/verifications/stats')
+  },
+  createCoupon(data) {
+    return request.post('/verifications/coupon', data)
+  },
+  createPoints(data) {
+    return request.post('/verifications/points', data)
+  },
+  createProduct(data) {
+    return request.post('/verifications/product', data)
+  },
+  verify(data) {
+    return request.post('/verifications/verify', data)
+  },
+  cancel(id) {
+    return request.post(`/verifications/${id}/cancel`)
+  },
+  delete(id) {
+    return request.delete(`/verifications/${id}`)
+  }
+}
+
+export const groupPurchaseAPI = {
+  getAll() {
+    return request.get('/group-purchases')
+  },
+  getById(id) {
+    return request.get(`/group-purchases/${id}`)
+  },
+  getActive() {
+    return request.get('/group-purchases/active')
+  },
+  getAvailable() {
+    return request.get('/group-purchases/available')
+  },
+  getByCategory(category) {
+    return request.get(`/group-purchases/category/${category}`)
+  },
+  create(data) {
+    return request.post('/group-purchases', data)
+  },
+  update(id, data) {
+    return request.put(`/group-purchases/${id}`, data)
+  },
+  delete(id) {
+    return request.delete(`/group-purchases/${id}`)
+  },
+  join(id, data) {
+    return request.post(`/group-purchases/${id}/join`, data)
   }
 }

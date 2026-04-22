@@ -2,504 +2,529 @@ import request from '../utils/request'
 
 export const userAPI = {
   login(data) {
-    return request.post('/users/login', data)
+    return request.post('/api/users/login', data)
   },
   register(data) {
-    return request.post('/users/register', data)
+    return request.post('/api/users/register', data)
   }
 }
 
 export const employeeAPI = {
   getAll() {
-    return request.get('/employees')
+    return request.get('/api/employees')
   },
   getById(id) {
-    return request.get(`/employees/${id}`)
+    return request.get(`/api/employees/${id}`)
   },
   create(data) {
-    return request.post('/employees', data)
+    return request.post('/api/employees', data)
   },
   update(id, data) {
-    return request.put(`/employees/${id}`, data)
+    return request.put(`/api/employees/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/employees/${id}`)
+    return request.delete(`/api/employees/${id}`)
   }
 }
 
 export const customerAPI = {
   getAll() {
-    return request.get('/customers')
+    return request.get('/api/customers')
   },
   getById(id) {
-    return request.get(`/customers/${id}`)
+    return request.get(`/api/customers/${id}`)
   },
   create(data) {
-    return request.post('/customers', data)
+    return request.post('/api/customers', data)
   },
   update(id, data) {
-    return request.put(`/customers/${id}`, data)
+    return request.put(`/api/customers/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/customers/${id}`)
+    return request.delete(`/api/customers/${id}`)
   }
 }
 
 export const attendanceAPI = {
   checkIn(data) {
-    return request.post('/attendances/check-in', data)
+    return request.post('/api/attendances/check-in', data)
   },
   checkOut(data) {
-    return request.post('/attendances/check-out', data)
+    return request.post('/api/attendances/check-out', data)
   },
   getByEmployee(employeeId) {
-    return request.get(`/attendances/employee/${employeeId}`)
+    return request.get(`/api/attendances/employee/${employeeId}`)
+  },
+  getByDateRange(employeeId, startDate, endDate) {
+    return request.get(`/api/attendances/employee/${employeeId}/date-range?startDate=${startDate}&endDate=${endDate}`)
   },
   getToday(employeeId) {
-    return request.get(`/attendances/employee/${employeeId}/today`)
+    return request.get(`/api/attendances/employee/${employeeId}/today`)
   }
 }
 
 export const orderAPI = {
   getAll() {
-    return request.get('/orders')
+    return request.get('/api/orders')
   },
   getById(id) {
-    return request.get(`/orders/${id}`)
+    return request.get(`/api/orders/${id}`)
   },
   getByCustomer(customerId) {
-    return request.get(`/orders/customer/${customerId}`)
+    return request.get(`/api/orders/customer/${customerId}`)
   },
   getByStatus(status) {
-    return request.get(`/orders/status/${status}`)
+    return request.get(`/api/orders/status/${status}`)
   },
   create(data) {
-    return request.post('/orders', data)
+    return request.post('/api/orders', data)
   },
   checkout(data) {
-    return request.post('/orders/checkout', data)
+    return request.post('/api/orders/checkout', data)
   },
   updateStatus(id, status) {
-    return request.put(`/orders/${id}/status?status=${status}`)
+    return request.put(`/api/orders/${id}/status?status=${status}`)
   },
   pay(id, paymentMethod) {
-    return request.put(`/orders/${id}/pay?paymentMethod=${paymentMethod}`)
+    return request.put(`/api/orders/${id}/pay?paymentMethod=${paymentMethod}`)
   },
   delete(id) {
-    return request.delete(`/orders/${id}`)
+    return request.delete(`/api/orders/${id}`)
   }
 }
 
 export const serviceAPI = {
   getAll() {
-    return request.get('/services')
+    return request.get('/api/services')
   },
   getById(id) {
-    return request.get(`/services/${id}`)
+    return request.get(`/api/services/${id}`)
   },
   getByCategory(category) {
-    return request.get(`/services/category/${category}`)
+    return request.get(`/api/services/category/${category}`)
   },
   getByStatus(status) {
-    return request.get(`/services/status/${status}`)
+    return request.get(`/api/services/status/${status}`)
   },
   search(name) {
-    return request.get(`/services/search?name=${name}`)
+    return request.get(`/api/services/search?name=${name}`)
   },
   create(data) {
-    return request.post('/services', data)
+    return request.post('/api/services', data)
   },
   update(id, data) {
-    return request.put(`/services/${id}`, data)
+    return request.put(`/api/services/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/services/${id}`)
+    return request.delete(`/api/services/${id}`)
   },
   updateStatus(id, status) {
-    return request.put(`/services/${id}/status?status=${status}`)
+    return request.put(`/api/services/${id}/status?status=${status}`)
   }
 }
 
 export const salaryAPI = {
   getAll() {
-    return request.get('/salaries')
+    return request.get('/api/salaries')
   },
   getById(id) {
-    return request.get(`/salaries/${id}`)
+    return request.get(`/api/salaries/${id}`)
   },
   getByEmployee(employeeId) {
-    return request.get(`/salaries/employee/${employeeId}`)
+    return request.get(`/api/salaries/employee/${employeeId}`)
   },
   getByYearMonth(year, month) {
-    return request.get(`/salaries/year-month?year=${year}&month=${month}`)
+    return request.get(`/api/salaries/year-month?year=${year}&month=${month}`)
   },
   getByStatus(status) {
-    return request.get(`/salaries/status/${status}`)
+    return request.get(`/api/salaries/status/${status}`)
   },
   calculate(employeeId, year, month) {
-    return request.post(`/salaries/calculate?employeeId=${employeeId}&year=${year}&month=${month}`)
+    return request.post(`/api/salaries/calculate?employeeId=${employeeId}&year=${year}&month=${month}`)
   },
   calculateAll(year, month) {
-    return request.post(`/salaries/calculate-all?year=${year}&month=${month}`)
+    return request.post(`/api/salaries/calculate-all?year=${year}&month=${month}`)
   },
   pay(id) {
-    return request.post(`/salaries/${id}/pay`)
+    return request.post(`/api/salaries/${id}/pay`)
   },
   batchPay(salaryIds) {
-    return request.post('/salaries/batch-pay', salaryIds)
+    return request.post('/api/salaries/batch-pay', salaryIds)
   },
   create(data) {
-    return request.post('/salaries', data)
+    return request.post('/api/salaries', data)
   },
   update(id, data) {
-    return request.put(`/salaries/${id}`, data)
+    return request.put(`/api/salaries/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/salaries/${id}`)
+    return request.delete(`/api/salaries/${id}`)
   }
 }
 
 export const reservationAPI = {
   getAll() {
-    return request.get('/reservations')
+    return request.get('/api/reservations')
   },
   getById(id) {
-    return request.get(`/reservations/${id}`)
+    return request.get(`/api/reservations/${id}`)
   },
   create(data) {
-    return request.post('/reservations', data)
+    return request.post('/api/reservations', data)
   },
   updateStatus(id, status) {
-    return request.put(`/reservations/${id}/status?status=${status}`)
+    return request.put(`/api/reservations/${id}/status?status=${status}`)
   }
 }
 
 export const scheduleAPI = {
   getAll() {
-    return request.get('/schedules')
+    return request.get('/api/schedules')
   },
   getById(id) {
-    return request.get(`/schedules/${id}`)
+    return request.get(`/api/schedules/${id}`)
   },
   create(data) {
-    return request.post('/schedules', data)
+    return request.post('/api/schedules', data)
   },
   update(id, data) {
-    return request.put(`/schedules/${id}`, data)
+    return request.put(`/api/schedules/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/schedules/${id}`)
+    return request.delete(`/api/schedules/${id}`)
   },
   getByEmployee(employeeId) {
-    return request.get(`/schedules/employee/${employeeId}`)
+    return request.get(`/api/schedules/employee/${employeeId}`)
   },
   getByEmployeeAndDateRange(employeeId, startDate, endDate) {
-    return request.get(`/schedules/employee/${employeeId}/date-range?startDate=${startDate}&endDate=${endDate}`)
+    return request.get(`/api/schedules/employee/${employeeId}/date-range?startDate=${startDate}&endDate=${endDate}`)
   },
   getByDateRange(startDate, endDate) {
-    return request.get(`/schedules/date-range?startDate=${startDate}&endDate=${endDate}`)
+    return request.get(`/api/schedules/date-range?startDate=${startDate}&endDate=${endDate}`)
   }
 }
 
 export const shiftAPI = {
   getAll() {
-    return request.get('/shifts')
+    return request.get('/api/shifts')
   },
   getById(id) {
-    return request.get(`/shifts/${id}`)
+    return request.get(`/api/shifts/${id}`)
   },
   create(data) {
-    return request.post('/shifts', data)
+    return request.post('/api/shifts', data)
   },
   update(id, data) {
-    return request.put(`/shifts/${id}`, data)
+    return request.put(`/api/shifts/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/shifts/${id}`)
+    return request.delete(`/api/shifts/${id}`)
   },
   updateStatus(id, status) {
-    return request.put(`/shifts/${id}/status?status=${status}`)
+    return request.put(`/api/shifts/${id}/status?status=${status}`)
   },
   getByEmployee(employeeId) {
-    return request.get(`/shifts/employee/${employeeId}`)
+    return request.get(`/api/shifts/employee/${employeeId}`)
   },
   getByStatus(status) {
-    return request.get(`/shifts/status/${status}`)
+    return request.get(`/api/shifts/status/${status}`)
   }
 }
 
 export const productAPI = {
   getAll() {
-    return request.get('/products')
+    return request.get('/api/products')
   },
   getById(id) {
-    return request.get(`/products/${id}`)
+    return request.get(`/api/products/${id}`)
   },
   create(data) {
-    return request.post('/products', data)
+    return request.post('/api/products', data)
   },
   update(id, data) {
-    return request.put(`/products/${id}`, data)
+    return request.put(`/api/products/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/products/${id}`)
+    return request.delete(`/api/products/${id}`)
   },
   getByCategory(category) {
-    return request.get(`/products/category/${category}`)
+    return request.get(`/api/products/category/${category}`)
   },
   search(name) {
-    return request.get(`/products/search?name=${name}`)
+    return request.get(`/api/products/search?name=${name}`)
   }
 }
 
 export const inventoryAPI = {
   getAll() {
-    return request.get('/inventory')
+    return request.get('/api/inventory')
   },
   getById(id) {
-    return request.get(`/inventory/${id}`)
+    return request.get(`/api/inventory/${id}`)
   },
   create(data) {
-    return request.post('/inventory', data)
+    return request.post('/api/inventory', data)
   },
   update(id, data) {
-    return request.put(`/inventory/${id}`, data)
+    return request.put(`/api/inventory/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/inventory/${id}`)
+    return request.delete(`/api/inventory/${id}`)
   },
   addStock(data) {
-    return request.post('/inventory/add-stock', data)
+    return request.post('/api/inventory/add-stock', data)
   },
   reduceStock(data) {
-    return request.post('/inventory/reduce-stock', data)
+    return request.post('/api/inventory/reduce-stock', data)
   },
   getLowStock(threshold) {
-    return request.get(`/inventory/low-stock?threshold=${threshold || 10}`)
+    return request.get(`/api/inventory/low-stock?threshold=${threshold || 10}`)
   }
 }
 
 export const commissionAPI = {
   getAll() {
-    return request.get('/commissions')
+    return request.get('/api/commissions')
   },
   getById(id) {
-    return request.get(`/commissions/${id}`)
+    return request.get(`/api/commissions/${id}`)
   },
   create(data) {
-    return request.post('/commissions', data)
+    return request.post('/api/commissions', data)
   },
   update(id, data) {
-    return request.put(`/commissions/${id}`, data)
+    return request.put(`/api/commissions/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/commissions/${id}`)
+    return request.delete(`/api/commissions/${id}`)
   },
   getByEmployee(employeeId) {
-    return request.get(`/commissions/employee/${employeeId}`)
+    return request.get(`/api/commissions/employee/${employeeId}`)
   },
   getByStatus(status) {
-    return request.get(`/commissions/status/${status}`)
+    return request.get(`/api/commissions/status/${status}`)
   },
   updateStatus(id, status) {
-    return request.put(`/commissions/${id}/status?status=${status}`)
+    return request.put(`/api/commissions/${id}/status?status=${status}`)
   }
 }
 
 export const dashboardAPI = {
   getData() {
-    return request.get('/dashboard/data')
+    return request.get('/api/dashboard/data')
   },
   getEmployeePerformance() {
-    return request.get('/dashboard/employee-performance')
+    return request.get('/api/dashboard/employee-performance')
   }
 }
 
 export const roomAPI = {
   getAll() {
-    return request.get('/rooms')
+    return request.get('/api/rooms')
   },
   getById(id) {
-    return request.get(`/rooms/${id}`)
+    return request.get(`/api/rooms/${id}`)
   },
   create(data) {
-    return request.post('/rooms', data)
+    return request.post('/api/rooms', data)
   },
   update(id, data) {
-    return request.put(`/rooms/${id}`, data)
+    return request.put(`/api/rooms/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/rooms/${id}`)
+    return request.delete(`/api/rooms/${id}`)
+  },
+  search(keyword, status, type) {
+    const params = new URLSearchParams()
+    if (keyword) params.append('keyword', keyword)
+    if (status) params.append('status', status)
+    if (type) params.append('type', type)
+    return request.get(`/api/rooms/search?${params.toString()}`)
   },
   getByStatus(status) {
-    return request.get(`/rooms/status/${status}`)
+    return request.get(`/api/rooms/status/${status}`)
   },
   updateStatus(id, status) {
-    return request.put(`/rooms/${id}/status?status=${status}`)
+    return request.put(`/api/rooms/${id}/status?status=${status}`)
+  },
+  batchDelete(ids) {
+    return request.delete('/api/rooms/batch', ids)
   }
 }
 
 export const membershipCardAPI = {
   getAll() {
-    return request.get('/membership-cards')
+    return request.get('/api/membership-cards')
   },
   getById(id) {
-    return request.get(`/membership-cards/${id}`)
+    return request.get(`/api/membership-cards/${id}`)
   },
   create(data) {
-    return request.post('/membership-cards', data)
+    return request.post('/api/membership-cards', data)
   },
   update(id, data) {
-    return request.put(`/membership-cards/${id}`, data)
+    return request.put(`/api/membership-cards/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/membership-cards/${id}`)
+    return request.delete(`/api/membership-cards/${id}`)
   },
   recharge(id, amount) {
-    return request.post(`/membership-cards/${id}/recharge?amount=${amount}`)
+    return request.post(`/api/membership-cards/${id}/recharge?amount=${amount}`)
   },
   consume(id, amount) {
-    return request.post(`/membership-cards/${id}/consume?amount=${amount}`)
+    return request.post(`/api/membership-cards/${id}/consume?amount=${amount}`)
   },
   getByCustomer(customerId) {
-    return request.get(`/membership-cards/customer/${customerId}`)
+    return request.get(`/api/membership-cards/customer/${customerId}`)
   }
 }
 
 export const cardTypeAPI = {
   getAll() {
-    return request.get('/card-types')
+    return request.get('/api/card-types')
   },
   getById(id) {
-    return request.get(`/card-types/${id}`)
+    return request.get(`/api/card-types/${id}`)
   },
   create(data) {
-    return request.post('/card-types', data)
+    return request.post('/api/card-types', data)
   },
   update(id, data) {
-    return request.put(`/card-types/${id}`, data)
+    return request.put(`/api/card-types/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/card-types/${id}`)
+    return request.delete(`/api/card-types/${id}`)
   },
   getByStatus(status) {
-    return request.get(`/card-types/status/${status}`)
+    return request.get(`/api/card-types/status/${status}`)
   }
 }
 
 export const couponAPI = {
   getAll() {
-    return request.get('/coupons')
+    return request.get('/api/coupons')
   },
   getById(id) {
-    return request.get(`/coupons/${id}`)
+    return request.get(`/api/coupons/${id}`)
   },
   create(data) {
-    return request.post('/coupons', data)
+    return request.post('/api/coupons', data)
   },
   update(id, data) {
-    return request.put(`/coupons/${id}`, data)
+    return request.put(`/api/coupons/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/coupons/${id}`)
+    return request.delete(`/api/coupons/${id}`)
   },
   use(id) {
-    return request.post(`/coupons/${id}/use`)
+    return request.post(`/api/coupons/${id}/use`)
   },
   getByCustomer(customerId) {
-    return request.get(`/coupons/customer/${customerId}`)
+    return request.get(`/api/coupons/customer/${customerId}`)
   }
 }
 
 export const marketingActivityAPI = {
   getAll() {
-    return request.get('/marketing-activities')
+    return request.get('/api/marketing-activities')
   },
   getById(id) {
-    return request.get(`/marketing-activities/${id}`)
+    return request.get(`/api/marketing-activities/${id}`)
   },
   create(data) {
-    return request.post('/marketing-activities', data)
+    return request.post('/api/marketing-activities', data)
   },
   update(id, data) {
-    return request.put(`/marketing-activities/${id}`, data)
+    return request.put(`/api/marketing-activities/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/marketing-activities/${id}`)
+    return request.delete(`/api/marketing-activities/${id}`)
   },
   getByStatus(status) {
-    return request.get(`/marketing-activities/status/${status}`)
+    return request.get(`/api/marketing-activities/status/${status}`)
   }
 }
 
 export const verificationAPI = {
   getAll() {
-    return request.get('/verifications')
+    return request.get('/api/verifications')
   },
   getById(id) {
-    return request.get(`/verifications/${id}`)
+    return request.get(`/api/verifications/${id}`)
   },
   getByCode(code) {
-    return request.get(`/verifications/code/${code}`)
+    return request.get(`/api/verifications/code/${code}`)
   },
   getByCustomer(customerId) {
-    return request.get(`/verifications/customer/${customerId}`)
+    return request.get(`/api/verifications/customer/${customerId}`)
   },
   getByStatus(status) {
-    return request.get(`/verifications/status/${status}`)
+    return request.get(`/api/verifications/status/${status}`)
   },
   getByType(type) {
-    return request.get(`/verifications/type/${type}`)
+    return request.get(`/api/verifications/type/${type}`)
   },
   getStats() {
-    return request.get('/verifications/stats')
+    return request.get('/api/verifications/stats')
   },
   createCoupon(data) {
-    return request.post('/verifications/coupon', data)
+    return request.post('/api/verifications/coupon', data)
   },
   createPoints(data) {
-    return request.post('/verifications/points', data)
+    return request.post('/api/verifications/points', data)
   },
   createProduct(data) {
-    return request.post('/verifications/product', data)
+    return request.post('/api/verifications/product', data)
   },
   verify(data) {
-    return request.post('/verifications/verify', data)
+    return request.post('/api/verifications/verify', data)
   },
   cancel(id) {
-    return request.post(`/verifications/${id}/cancel`)
+    return request.post(`/api/verifications/${id}/cancel`)
   },
   delete(id) {
-    return request.delete(`/verifications/${id}`)
+    return request.delete(`/api/verifications/${id}`)
   }
 }
 
 export const groupPurchaseAPI = {
   getAll() {
-    return request.get('/group-purchases')
+    return request.get('/api/group-purchases')
   },
   getById(id) {
-    return request.get(`/group-purchases/${id}`)
+    return request.get(`/api/group-purchases/${id}`)
   },
   getActive() {
-    return request.get('/group-purchases/active')
+    return request.get('/api/group-purchases/active')
   },
   getAvailable() {
-    return request.get('/group-purchases/available')
+    return request.get('/api/group-purchases/available')
   },
   getByCategory(category) {
-    return request.get(`/group-purchases/category/${category}`)
+    return request.get(`/api/group-purchases/category/${category}`)
   },
   create(data) {
-    return request.post('/group-purchases', data)
+    return request.post('/api/group-purchases', data)
   },
   update(id, data) {
-    return request.put(`/group-purchases/${id}`, data)
+    return request.put(`/api/group-purchases/${id}`, data)
   },
   delete(id) {
-    return request.delete(`/group-purchases/${id}`)
+    return request.delete(`/api/group-purchases/${id}`)
   },
   join(id, data) {
-    return request.post(`/group-purchases/${id}/join`, data)
+    return request.post(`/api/group-purchases/${id}/join`, data)
+  }
+}
+
+export const paymentAPI = {
+  create(data) {
+    return request.post('/api/payments/create', data)
+  },
+  queryStatus(paymentNo) {
+    return request.get(`/api/payments/status/${paymentNo}`)
+  },
+  sandboxSuccess(paymentNo) {
+    return request.post(`/api/payments/sandbox/${paymentNo}/success`)
   }
 }

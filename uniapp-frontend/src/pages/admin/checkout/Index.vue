@@ -147,7 +147,7 @@
 </template>
 
 <script>
-import { customerAPI, employeeAPI, orderAPI } from '../../../api/index'
+import { customerAPI, employeeAPI, orderAPI, serviceAPI, productAPI } from '../../../api/index'
 
 export default {
   name: 'Checkout',
@@ -156,16 +156,8 @@ export default {
       step: 1,
       searchKeyword: '',
       customers: [],
-      services: [
-        { id: 1, name: '面部护理', description: '深层清洁补水', price: 200, duration: 60 },
-        { id: 2, name: '身体护理', description: '全身按摩放松', price: 300, duration: 90 },
-        { id: 3, name: '美甲', description: '专业美甲服务', price: 100, duration: 30 }
-      ],
-      products: [
-        { id: 1, name: '爽肤水', description: '补水保湿', price: 150 },
-        { id: 2, name: '面霜', description: '滋润保湿', price: 200 },
-        { id: 3, name: '精华液', description: '抗衰紧致', price: 300 }
-      ],
+      services: [],
+      products: [],
       employees: [],
       activeTab: 'service',
       selectedCustomer: null,
@@ -179,7 +171,11 @@ export default {
         { label: '银行卡', value: 'bank' },
         { label: '储值余额', value: 'member_card' }
       ],
-      loading: false
+      loading: false,
+      loadingCustomers: false,
+      loadingServices: false,
+      loadingProducts: false,
+      loadingEmployees: false
     }
   },
   computed: {
@@ -198,9 +194,12 @@ export default {
   mounted() {
     this.loadCustomers()
     this.loadEmployees()
+    this.loadServices()
+    this.loadProducts()
   },
   methods: {
     async loadCustomers() {
+      this.loadingCustomers = true
       try {
         const response = await customerAPI.getAll()
         if (Array.isArray(response)) {
@@ -208,9 +207,15 @@ export default {
         }
       } catch (error) {
         console.error('加载顾客列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载顾客列表失败', icon: 'none' })
+        }
+      } finally {
+        this.loadingCustomers = false
       }
     },
     async loadEmployees() {
+      this.loadingEmployees = true
       try {
         const response = await employeeAPI.getAll()
         if (Array.isArray(response)) {
@@ -218,10 +223,70 @@ export default {
         }
       } catch (error) {
         console.error('加载员工列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载员工列表失败', icon: 'none' })
+        }
+      } finally {
+        this.loadingEmployees = false
       }
     },
-    searchCustomers() {
-      // 搜索由computed属性处理
+    async loadServices() {
+      this.loadingServices = true
+      try {
+        const response = await serviceAPI.getAll()
+        if (Array.isArray(response)) {
+          this.services = response
+        }
+      } catch (error) {
+        console.error('加载服务列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载服务列表失败', icon: 'none' })
+        }
+      } finally {
+        this.loadingServices = false
+      }
+    },
+    async loadProducts() {
+      this.loadingProducts = true
+      try {
+        const response = await productAPI.getAll()
+        if (Array.isArray(response)) {
+          this.products = response
+        }
+      } catch (error) {
+        console.error('加载商品列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载商品列表失败', icon: 'none' })
+        }
+      } finally {
+        this.loadingProducts = false
+      }
+    },
+    async searchCustomers() {
+      if (!this.searchKeyword.trim()) {
+        await this.loadCustomers()
+        return
+      }
+      
+      this.loadingCustomers = true
+      try {
+        // 这里应该调用搜索API，但如果没有，可以在前端过滤
+        const response = await customerAPI.getAll()
+        if (Array.isArray(response)) {
+          this.customers = response.filter(customer => {
+            const name = customer.user ? customer.user.name : ''
+            const phone = customer.user ? customer.user.phone : ''
+            return name.includes(this.searchKeyword) || phone.includes(this.searchKeyword)
+          })
+        }
+      } catch (error) {
+        console.error('搜索顾客失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '搜索失败', icon: 'none' })
+        }
+      } finally {
+        this.loadingCustomers = false
+      }
     },
     selectCustomer(customer) {
       this.selectedCustomer = customer
@@ -278,6 +343,8 @@ export default {
       this.$router.push('/admin/dashboard')
     },
     async submitOrder() {
+      if (this.loading) return // 防止重复提交
+      
       this.loading = true
       try {
         const orderData = {
@@ -288,12 +355,36 @@ export default {
           totalAmount: this.totalAmount
         }
         const response = await orderAPI.create(orderData)
-        if (response.id) {
-          alert('订单提交成功')
-          this.$router.push('/admin/dashboard')
+        if (response && response.id) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({
+              title: '订单提交成功',
+              icon: 'success',
+              duration: 2000
+            })
+          }
+          // 延迟跳转，让用户看到成功提示
+          setTimeout(() => {
+            this.$router.push('/admin/dashboard')
+          }, 1500)
+        } else {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({
+              title: '订单提交失败',
+              icon: 'none',
+              duration: 2000
+            })
+          }
         }
       } catch (error) {
-        alert('订单提交失败')
+        console.error('订单提交失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({
+            title: '订单提交失败，请重试',
+            icon: 'none',
+            duration: 2000
+          })
+        }
       } finally {
         this.loading = false
       }

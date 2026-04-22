@@ -4,6 +4,7 @@ import com.beautyshop.dto.InventoryRequest;
 import com.beautyshop.entity.Inventory;
 import com.beautyshop.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
@@ -37,9 +38,8 @@ public class InventoryController {
     }
 
     @PutMapping("/{id}")
-    public Inventory updateInventory(@PathVariable Long id, @RequestBody Inventory inventory) {
-        inventory.setId(id);
-        return inventoryService.saveInventory(inventory);
+    public Inventory updateInventory(@PathVariable Long id, @RequestBody InventoryRequest request) {
+        return inventoryService.updateInventory(id, request);
     }
 
     @DeleteMapping("/{id}")
@@ -53,7 +53,7 @@ public class InventoryController {
     }
 
     @GetMapping("/expiring")
-    public List<Inventory> getExpiringInventories(@RequestParam Date date) {
+    public List<Inventory> getExpiringInventories(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         return inventoryService.getExpiringInventories(date);
     }
 

@@ -186,13 +186,51 @@ export default {
       this.submitting = true
       try {
         const id = this.$route.query.id
-        const response = await customerAPI.update(id, this.form)
+        const requestData = {
+          name: this.form.user.name,
+          phone: this.form.user.phone,
+          gender: this.form.gender,
+          birthday: this.form.birthday,
+          wechat: this.form.wechat,
+          occupation: this.form.occupation,
+          sourceChannel: this.form.sourceChannel,
+          sourcePlatform: this.form.sourcePlatform,
+          skinType: this.form.skinType,
+          allergyHistory: this.form.allergyHistory,
+          skinProblems: this.form.skinProblems,
+          preferredItems: this.form.preferredItems,
+          preferredEmployee: this.form.preferredEmployee,
+          preferredTime: this.form.preferredTime,
+          averageSpending: this.form.averageSpending,
+          tags: this.form.tags
+        }
+        const response = await customerAPI.update(id, requestData)
         if (response.id) {
-          alert('更新成功')
-          this.$router.push('/admin/customer/list')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({
+              title: '更新成功',
+              icon: 'success',
+              duration: 2000
+            })
+            setTimeout(() => {
+              this.$router.push('/admin/customer/list')
+            }, 1500)
+          } else {
+            alert('更新成功')
+            this.$router.push('/admin/customer/list')
+          }
         }
       } catch (error) {
-        alert('更新失败')
+        console.error('更新顾客失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({
+            title: '更新失败，请重试',
+            icon: 'none',
+            duration: 2000
+          })
+        } else {
+          alert('更新失败')
+        }
       } finally {
         this.submitting = false
       }

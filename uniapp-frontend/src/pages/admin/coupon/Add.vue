@@ -98,20 +98,93 @@ export default {
       }
     },
     async handleSubmit() {
+      // 验证卡券名称
       if (!this.form.name) {
-        uni.showToast({ title: '请输入卡券名称', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入卡券名称', icon: 'none' })
+        } else {
+          alert('请输入卡券名称')
+        }
         return
       }
+      
+      // 验证卡券类型
       if (!this.form.type) {
-        uni.showToast({ title: '请选择卡券类型', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择卡券类型', icon: 'none' })
+        } else {
+          alert('请选择卡券类型')
+        }
         return
       }
+      
+      // 验证卡券类型相关字段
+      if (this.form.type === '满减券') {
+        if (!this.form.discountAmount || isNaN(this.form.discountAmount) || this.form.discountAmount <= 0) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的优惠金额', icon: 'none' })
+          } else {
+            alert('请输入有效的优惠金额')
+          }
+          return
+        }
+        if (!this.form.minAmount || isNaN(this.form.minAmount) || this.form.minAmount <= 0) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的最低消费金额', icon: 'none' })
+          } else {
+            alert('请输入有效的最低消费金额')
+          }
+          return
+        }
+        if (this.form.discountAmount >= this.form.minAmount) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '优惠金额应小于最低消费金额', icon: 'none' })
+          } else {
+            alert('优惠金额应小于最低消费金额')
+          }
+          return
+        }
+      } else if (this.form.type === '折扣券') {
+        if (!this.form.discountRate || isNaN(this.form.discountRate) || this.form.discountRate <= 0 || this.form.discountRate >= 1) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的折扣率（0-1之间）', icon: 'none' })
+          } else {
+            alert('请输入有效的折扣率（0-1之间）')
+          }
+          return
+        }
+      }
+      
+      // 验证有效期
       if (!this.form.expiryDate) {
-        uni.showToast({ title: '请选择有效期', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择有效期', icon: 'none' })
+        } else {
+          alert('请选择有效期')
+        }
         return
       }
+      
+      // 验证有效期应在未来
+      const expiryDate = new Date(this.form.expiryDate)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      if (expiryDate < today) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '有效期应在未来', icon: 'none' })
+        } else {
+          alert('有效期应在未来')
+        }
+        return
+      }
+      
+      // 验证关联客户
       if (!this.form.customerId) {
-        uni.showToast({ title: '请选择关联客户', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择关联客户', icon: 'none' })
+        } else {
+          alert('请选择关联客户')
+        }
         return
       }
 
@@ -126,13 +199,22 @@ export default {
         }
 
         await couponAPI.create(submitData)
-        uni.showToast({ title: '发放成功', icon: 'success' })
-        setTimeout(() => {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '发放成功', icon: 'success' })
+          setTimeout(() => {
+            this.$router.push('/admin/coupon/list')
+          }, 1500)
+        } else {
+          alert('发放成功')
           this.$router.push('/admin/coupon/list')
-        }, 1500)
+        }
       } catch (error) {
         console.error('发放卡券失败:', error)
-        uni.showToast({ title: '发放失败', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '发放失败，请重试', icon: 'none' })
+        } else {
+          alert('发放失败，请重试')
+        }
       }
     },
     goBack() {

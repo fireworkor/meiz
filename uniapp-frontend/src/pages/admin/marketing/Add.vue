@@ -110,37 +110,124 @@ export default {
       }
     },
     async handleSubmit() {
+      // 验证活动名称
       if (!this.form.name) {
-        uni.showToast({ title: '请输入活动名称', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入活动名称', icon: 'none' })
+        } else {
+          alert('请输入活动名称')
+        }
         return
       }
+      
+      // 验证活动类型
       if (!this.form.type) {
-        uni.showToast({ title: '请选择活动类型', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择活动类型', icon: 'none' })
+        } else {
+          alert('请选择活动类型')
+        }
         return
       }
+      
+      // 验证活动类型相关字段
+      if (this.form.type === '折扣活动') {
+        if (!this.form.discountRate || isNaN(this.form.discountRate) || this.form.discountRate <= 0 || this.form.discountRate >= 1) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的折扣率（0-1之间）', icon: 'none' })
+          } else {
+            alert('请输入有效的折扣率（0-1之间）')
+          }
+          return
+        }
+      } else if (this.form.type === '满减活动') {
+        if (!this.form.minAmount || isNaN(this.form.minAmount) || this.form.minAmount <= 0) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的满减门槛金额', icon: 'none' })
+          } else {
+            alert('请输入有效的满减门槛金额')
+          }
+          return
+        }
+        if (!this.form.discountAmount || isNaN(this.form.discountAmount) || this.form.discountAmount <= 0) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '请输入有效的减免金额', icon: 'none' })
+          } else {
+            alert('请输入有效的减免金额')
+          }
+          return
+        }
+        if (this.form.discountAmount >= this.form.minAmount) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '减免金额应小于满减门槛', icon: 'none' })
+          } else {
+            alert('减免金额应小于满减门槛')
+          }
+          return
+        }
+      }
+      
+      // 验证日期
       if (!this.form.startDate) {
-        uni.showToast({ title: '请选择开始时间', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择开始时间', icon: 'none' })
+        } else {
+          alert('请选择开始时间')
+        }
         return
       }
       if (!this.form.endDate) {
-        uni.showToast({ title: '请选择结束时间', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择结束时间', icon: 'none' })
+        } else {
+          alert('请选择结束时间')
+        }
+        return
+      }
+      
+      // 验证开始时间应早于结束时间
+      const startDate = new Date(this.form.startDate)
+      const endDate = new Date(this.form.endDate)
+      if (startDate >= endDate) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '开始时间应早于结束时间', icon: 'none' })
+        } else {
+          alert('开始时间应早于结束时间')
+        }
         return
       }
 
       try {
         if (this.isEdit) {
           await marketingActivityAPI.update(this.activityId, this.form)
-          uni.showToast({ title: '修改成功', icon: 'success' })
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '修改成功', icon: 'success' })
+            setTimeout(() => {
+              this.$router.push('/admin/marketing/list')
+            }, 1500)
+          } else {
+            alert('修改成功')
+            this.$router.push('/admin/marketing/list')
+          }
         } else {
           await marketingActivityAPI.create(this.form)
-          uni.showToast({ title: '创建成功', icon: 'success' })
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '创建成功', icon: 'success' })
+            setTimeout(() => {
+              this.$router.push('/admin/marketing/list')
+            }, 1500)
+          } else {
+            alert('创建成功')
+            this.$router.push('/admin/marketing/list')
+          }
         }
-        setTimeout(() => {
-          this.$router.push('/admin/marketing/list')
-        }, 1500)
       } catch (error) {
         console.error('保存活动失败:', error)
-        uni.showToast({ title: '保存失败', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '保存失败，请重试', icon: 'none' })
+        } else {
+          alert('保存失败，请重试')
+        }
       }
     },
     goBack() {

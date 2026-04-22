@@ -1,5 +1,6 @@
 package com.beautyshop.controller;
 
+import com.beautyshop.dto.CustomerRequest;
 import com.beautyshop.entity.Customer;
 import com.beautyshop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,13 @@ public class CustomerController {
     }
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.saveCustomer(customer);
+    public Customer createCustomer(@RequestBody CustomerRequest request) {
+        return customerService.createCustomer(request);
     }
 
     @PutMapping("/{id}")
-    public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
-        customer.setId(id);
-        return customerService.saveCustomer(customer);
+    public Customer updateCustomer(@PathVariable Long id, @RequestBody CustomerRequest request) {
+        return customerService.updateCustomer(id, request);
     }
 
     @DeleteMapping("/{id}")

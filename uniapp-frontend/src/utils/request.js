@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = 'http://localhost:8080'
 
 export const request = {
   async post(url, data) {
@@ -8,7 +8,8 @@ export const request = {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       })
       return await response.json()
     } catch (error) {
@@ -27,7 +28,8 @@ export const request = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       })
       return await response.json()
     } catch (error) {
@@ -43,7 +45,8 @@ export const request = {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       })
       return await response.json()
     } catch (error) {
@@ -52,13 +55,15 @@ export const request = {
     }
   },
 
-  async delete(url) {
+  async delete(url, data) {
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: data ? JSON.stringify(data) : undefined,
+        credentials: 'include'
       })
       return await response.json()
     } catch (error) {

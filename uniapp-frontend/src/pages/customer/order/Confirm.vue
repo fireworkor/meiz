@@ -220,16 +220,14 @@ export default {
         return
       }
 
-      uni.showModal({
-        title: '确认提交订单',
-        content: `确认提交订单，金额：${this.totalPrice}？`,
-        success: (res) => {
-          if (res.confirm) {
-            uni.showToast({ title: '订单提交成功', icon: 'success' })
-            setTimeout(() => {
-              this.$router.push('/customer/order/list')
-            }, 1500)
-          }
+      const orderId = Date.now() % 10000
+      const amount = parseFloat(this.totalPrice.replace('¥', ''))
+      
+      this.$router.push({
+        path: '/payment',
+        query: {
+          orderId: orderId,
+          amount: amount
         }
       })
     },

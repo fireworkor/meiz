@@ -1,5 +1,6 @@
 package com.beautyshop.controller;
 
+import com.beautyshop.dto.MarketingActivityRequest;
 import com.beautyshop.entity.MarketingActivity;
 import com.beautyshop.service.MarketingActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,8 @@ public class MarketingActivityController {
     }
 
     @PutMapping("/{id}")
-    public MarketingActivity updateMarketingActivity(@PathVariable Long id, @RequestBody MarketingActivity activity) {
-        activity.setId(id);
-        return marketingActivityService.saveMarketingActivity(activity);
+    public MarketingActivity updateMarketingActivity(@PathVariable Long id, @RequestBody MarketingActivityRequest request) {
+        return marketingActivityService.updateMarketingActivity(id, request);
     }
 
     @DeleteMapping("/{id}")

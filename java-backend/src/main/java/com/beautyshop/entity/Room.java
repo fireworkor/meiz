@@ -21,6 +21,15 @@ public class Room {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "floor")
+    private Integer floor;
+
+    @Column(name = "display_order")
+    private Integer displayOrder;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +68,29 @@ public class Room {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getFloor() {
+        return floor;
+    }
+
+    public void setFloor(Integer floor) {
+        this.floor = floor;
+    }
+
+    public Integer getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
     }
 }

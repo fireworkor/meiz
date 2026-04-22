@@ -5,6 +5,29 @@
       <button class="logout-btn" @click="logout">退出登录</button>
     </header>
     <div class="menu-container">
+      <!-- 第一组：运营管理 -->
+      <div class="menu-item" @click="navigateTo('reservation')">
+        <div class="menu-icon">📋</div>
+        <div class="menu-label">预约管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('checkout')">
+        <div class="menu-icon">💳</div>
+        <div class="menu-label">开单收银</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('room')">
+        <div class="menu-icon">🏠</div>
+        <div class="menu-label">房间管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('customer')">
+        <div class="menu-icon">👤</div>
+        <div class="menu-label">顾客档案</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('inventory')">
+        <div class="menu-icon">📦</div>
+        <div class="menu-label">库存管理</div>
+      </div>
+      
+      <!-- 第二组：员工管理 -->
       <div class="menu-item" @click="navigateTo('employee')">
         <div class="menu-icon">👥</div>
         <div class="menu-label">员工管理</div>
@@ -25,42 +48,8 @@
         <div class="menu-icon">🔄</div>
         <div class="menu-label">门店交班</div>
       </div>
-      <div class="menu-item" @click="navigateTo('customer')">
-        <div class="menu-icon">👤</div>
-        <div class="menu-label">顾客档案</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('marketing')">
-        <div class="menu-icon">📣</div>
-        <div class="menu-label">全员营销</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('reservation')">
-        <div class="menu-icon">📋</div>
-        <div class="menu-label">预约管理</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('room')">
-        <div class="menu-icon">🏠</div>
-        <div class="menu-label">房间管理</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('checkout')">
-        <div class="menu-icon">💳</div>
-        <div class="menu-label">开单收银</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('inventory')">
-        <div class="menu-icon">📦</div>
-        <div class="menu-label">库存管理</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('commission')">
-        <div class="menu-icon">💰</div>
-        <div class="menu-label">提成管理</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('service')">
-        <div class="menu-icon">✂️</div>
-        <div class="menu-label">服务记录</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('analysis')">
-        <div class="menu-icon">📊</div>
-        <div class="menu-label">数据分析</div>
-      </div>
+      
+      <!-- 第三组：营销管理 -->
       <div class="menu-item" @click="navigateTo('member')">
         <div class="menu-icon">💎</div>
         <div class="menu-label">会员体系</div>
@@ -69,10 +58,6 @@
         <div class="menu-icon">🎫</div>
         <div class="menu-label">卡券管理</div>
       </div>
-      <div class="menu-item" @click="navigateTo('verification')">
-        <div class="menu-icon">✓</div>
-        <div class="menu-label">核销管理</div>
-      </div>
       <div class="menu-item" @click="navigateTo('grouppurchase')">
         <div class="menu-icon">🏷️</div>
         <div class="menu-label">本地生活团购</div>
@@ -80,6 +65,24 @@
       <div class="menu-item" @click="navigateTo('marketing')">
         <div class="menu-icon">📢</div>
         <div class="menu-label">营销活动</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('verification')">
+        <div class="menu-icon">✓</div>
+        <div class="menu-label">核销管理</div>
+      </div>
+      
+      <!-- 第四组：数据统计 -->
+      <div class="menu-item" @click="navigateTo('service')">
+        <div class="menu-icon">✂️</div>
+        <div class="menu-label">服务记录</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('commission')">
+        <div class="menu-icon">💰</div>
+        <div class="menu-label">提成管理</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('analysis')">
+        <div class="menu-icon">📊</div>
+        <div class="menu-label">数据分析</div>
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ import com.beautyshop.entity.Order;
 import com.beautyshop.entity.OrderItem;
 import com.beautyshop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +42,8 @@ public class OrderController {
 
     @GetMapping("/date-range")
     public List<Order> getOrdersByDateRange(
-            @RequestParam Date startDate,
-            @RequestParam Date endDate) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         return orderService.getOrdersByDateRange(startDate, endDate);
     }
 

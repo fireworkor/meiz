@@ -1,5 +1,6 @@
 package com.beautyshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ public class Attendance {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Employee employee;
 
     private Date checkInTime;

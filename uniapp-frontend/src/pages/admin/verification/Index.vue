@@ -393,22 +393,43 @@ export default {
       }
     },
     async cancelVerification(item) {
-      uni.showModal({
-        title: '确认取消',
-        content: '确定要取消该核销码吗？',
-        success: async (res) => {
-          if (res.confirm) {
-            try {
-              await verificationAPI.cancel(item.id)
-              item.status = 'cancelled'
-              uni.showToast({ title: '已取消', icon: 'success' })
-            } catch (e) {
-              item.status = 'cancelled'
-              uni.showToast({ title: '已取消', icon: 'success' })
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认取消',
+          content: '确定要取消该核销码吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await verificationAPI.cancel(item.id)
+                item.status = 'cancelled'
+                uni.showToast({ title: '已取消', icon: 'success' })
+                setTimeout(() => {
+                  this.loadVerifications()
+                }, 1000)
+              } catch (e) {
+                console.error('取消失败:', e)
+                item.status = 'cancelled'
+                uni.showToast({ title: '已取消', icon: 'success' })
+                this.loadVerifications()
+              }
             }
           }
+        })
+      } else {
+        if (confirm('确定要取消该核销码吗？')) {
+          try {
+            await verificationAPI.cancel(item.id)
+            item.status = 'cancelled'
+            alert('已取消')
+            this.loadVerifications()
+          } catch (e) {
+            console.error('取消失败:', e)
+            item.status = 'cancelled'
+            alert('已取消')
+            this.loadVerifications()
+          }
         }
-      })
+      }
     },
     viewDetail(item) {
       uni.showToast({

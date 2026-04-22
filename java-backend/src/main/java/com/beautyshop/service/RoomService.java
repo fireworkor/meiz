@@ -17,7 +17,7 @@ public class RoomService {
     }
 
     public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+        return roomRepository.findAllByOrderByDisplayOrderAscIdAsc();
     }
 
     public Optional<Room> getRoomById(Long id) {
@@ -32,8 +32,16 @@ public class RoomService {
         return roomRepository.findByType(type);
     }
 
+    public List<Room> searchRooms(String keyword, String status, String type) {
+        return roomRepository.searchRooms(keyword, status, type);
+    }
+
     public void deleteRoom(Long id) {
         roomRepository.deleteById(id);
+    }
+
+    public void deleteRooms(List<Long> ids) {
+        roomRepository.deleteAllById(ids);
     }
 
     public Room updateRoomStatus(Long id, String status) {

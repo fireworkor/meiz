@@ -3,6 +3,7 @@ package com.beautyshop.entity;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @Entity
@@ -13,6 +14,7 @@ public class User {
     private Long id;
 
     private String username;
+    @JsonIgnore
     private String password;
     private String role; // admin, staff, customer
     private String name;

@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { userAPI } from '../../api/index.js'
+
 export default {
   name: 'Login',
   data() {
@@ -47,35 +49,10 @@ export default {
 
       this.loading = true
       try {
-        // 模拟登录验证
-        const mockUsers = {
-          admin: {
-            username: 'admin',
-            password: 'admin123',
-            role: 'admin'
-          },
-          staff: {
-            username: 'staff',
-            password: 'staff123',
-            role: 'staff'
-          },
-          customer: {
-            username: 'customer',
-            password: 'customer123',
-            role: 'customer'
-          }
-        }
-
-        const user = mockUsers[this.loginForm.role]
-        if (user && this.loginForm.username === user.username && this.loginForm.password === user.password) {
-          const response = {
-            success: true,
-            message: '登录成功',
-            token: 'mock-token',
-            role: user.role,
-            username: user.username
-          }
-
+        // 实际调用后端API
+        const response = await userAPI.login(this.loginForm)
+        
+        if (response.success) {
           localStorage.setItem('userInfo', JSON.stringify({
             username: response.username,
             role: response.role,
@@ -94,10 +71,11 @@ export default {
               break
           }
         } else {
-          alert('用户名或密码错误')
+          alert(response.message || '登录失败')
         }
       } catch (error) {
         alert('登录失败，请检查网络连接')
+        console.error('登录错误:', error)
       } finally {
         this.loading = false
       }

@@ -5,10 +5,21 @@
       <button class="logout-btn" @click="logout">退出登录</button>
     </header>
     <div class="menu-container">
+      <!-- 第一组：个人中心 -->
       <div class="menu-item" @click="navigateTo('profile')">
         <div class="menu-icon">👤</div>
         <div class="menu-label">个人资料</div>
       </div>
+      <div class="menu-item" @click="navigateTo('consumption')">
+        <div class="menu-icon">💳</div>
+        <div class="menu-label">消费记录</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('notifications')">
+        <div class="menu-icon">🔔</div>
+        <div class="menu-label">消息通知</div>
+      </div>
+      
+      <!-- 第二组：预约服务 -->
       <div class="menu-item" @click="navigateTo('reservation')">
         <div class="menu-icon">📋</div>
         <div class="menu-label">预约服务</div>
@@ -17,10 +28,12 @@
         <div class="menu-icon">📅</div>
         <div class="menu-label">我的预约</div>
       </div>
-      <div class="menu-item" @click="navigateTo('consumption')">
-        <div class="menu-icon">💳</div>
-        <div class="menu-label">消费记录</div>
+      <div class="menu-item" @click="navigateTo('evaluation')">
+        <div class="menu-icon">⭐</div>
+        <div class="menu-label">评价系统</div>
       </div>
+      
+      <!-- 第三组：在线商城 -->
       <div class="menu-item" @click="navigateTo('mall')">
         <div class="menu-icon">🛍️</div>
         <div class="menu-label">在线商城</div>
@@ -29,29 +42,23 @@
         <div class="menu-icon">🎁</div>
         <div class="menu-label">积分商城</div>
       </div>
+      <div class="menu-item" @click="navigateTo('grouppurchase')">
+        <div class="menu-icon">🏷️</div>
+        <div class="menu-label">本地生活团购</div>
+      </div>
+      
+      <!-- 第四组：营销活动 -->
       <div class="menu-item" @click="navigateTo('activities')">
         <div class="menu-icon">🎉</div>
         <div class="menu-label">营销活动</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('evaluation')">
-        <div class="menu-icon">⭐</div>
-        <div class="menu-label">评价系统</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('notifications')">
-        <div class="menu-icon">🔔</div>
-        <div class="menu-label">消息通知</div>
-      </div>
-      <div class="menu-item" @click="navigateTo('promoter')">
-        <div class="menu-icon">📣</div>
-        <div class="menu-label">推广员功能</div>
       </div>
       <div class="menu-item" @click="navigateTo('verification')">
         <div class="menu-icon">✓</div>
         <div class="menu-label">我的核销码</div>
       </div>
-      <div class="menu-item" @click="navigateTo('grouppurchase')">
-        <div class="menu-icon">🏷️</div>
-        <div class="menu-label">本地生活团购</div>
+      <div class="menu-item" @click="navigateTo('promoter')">
+        <div class="menu-icon">📣</div>
+        <div class="menu-label">推广员功能</div>
       </div>
     </div>
   </div>

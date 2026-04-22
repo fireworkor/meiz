@@ -9,12 +9,31 @@
       <div class="filter-group">
         <select v-model="filterStatus" @change="handleFilter">
           <option value="">全部状态</option>
-          <option value="未使用">未使用</option>
-          <option value="已使用">已使用</option>
-          <option value="已过期">已过期</option>
+          <option value="unused">未使用</option>
+          <option value="used">已使用</option>
+          <option value="expired">已过期</option>
         </select>
       </div>
       <button class="add-btn" @click="goToAdd">发放卡券</button>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-value">{{ totalCount }}</div>
+        <div class="summary-label">总卡券</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-value">{{ unusedCount }}</div>
+        <div class="summary-label">未使用</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-value">{{ usedCount }}</div>
+        <div class="summary-label">已使用</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-value">{{ expiredCount }}</div>
+        <div class="summary-label">已过期</div>
+      </div>
     </div>
 
     <div class="coupon-container">
@@ -22,7 +41,7 @@
         <div class="coupon-header">
           <h3>{{ coupon.name }}</h3>
           <span :class="['status-badge', getStatusClass(coupon.status)]">
-            {{ coupon.status }}
+            {{ getStatusName(coupon.status) }}
           </span>
         </div>
         <div class="coupon-info">
@@ -32,7 +51,7 @@
           </div>
           <div class="info-row">
             <span class="label">类型：</span>
-            <span class="value">{{ coupon.type }}</span>
+            <span class="value">{{ getTypeName(coupon.type) }}</span>
           </div>
           <div class="info-row" v-if="coupon.discountAmount">
             <span class="label">优惠金额：</span>
@@ -50,6 +69,10 @@
             <span class="label">有效期：</span>
             <span class="value">{{ formatDate(coupon.expiryDate) }}</span>
           </div>
+        </div>
+        <div class="coupon-actions">
+          <button v-if="coupon.status === 'unused'" class="use-btn" @click="handleUse(coupon)">核销</button>
+          <button class="delete-btn" @click="handleDelete(coupon)">删除</button>
         </div>
       </div>
       <div v-if="filteredCoupons.length === 0" class="empty">
@@ -74,10 +97,26 @@ export default {
   },
   computed: {
     filteredCoupons() {
-      if (!this.filterStatus) {
-        return this.coupons
+      let result = [...this.coupons]
+      if (this.filterStatus) {
+        result = result.filter(coupon => coupon.status === this.filterStatus)
       }
-      return this.coupons.filter(coupon => coupon.status === this.filterStatus)
+      return result.map(coupon => ({
+        ...coupon,
+        status: this.getComputedStatus(coupon)
+      }))
+    },
+    totalCount() {
+      return this.coupons.length
+    },
+    unusedCount() {
+      return this.coupons.filter(c => this.getComputedStatus(c) === 'unused').length
+    },
+    usedCount() {
+      return this.coupons.filter(c => this.getComputedStatus(c) === 'used').length
+    },
+    expiredCount() {
+      return this.coupons.filter(c => this.getComputedStatus(c) === 'expired').length
     }
   },
   mounted() {
@@ -97,21 +136,107 @@ export default {
         this.loading = false
       }
     },
+    getComputedStatus(coupon) {
+      if (coupon.status === 'used') return 'used'
+      if (coupon.expiryDate) {
+        const now = new Date()
+        const expiryDate = new Date(coupon.expiryDate)
+        if (now > expiryDate) return 'expired'
+      }
+      return coupon.status || 'unused'
+    },
     formatDate(date) {
       if (!date) return ''
       const d = new Date(date)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     },
+    getStatusName(status) {
+      const names = {
+        unused: '未使用',
+        used: '已使用',
+        expired: '已过期'
+      }
+      return names[status] || status
+    },
+    getTypeName(type) {
+      const names = {
+        DISCOUNT: '折扣券',
+        CASH: '满减券',
+        GIFT: '礼品券'
+      }
+      return names[type] || type
+    },
     getStatusClass(status) {
       switch (status) {
-        case '未使用': return 'status-unused'
-        case '已使用': return 'status-used'
-        case '已过期': return 'status-expired'
+        case 'unused': return 'status-unused'
+        case 'used': return 'status-used'
+        case 'expired': return 'status-expired'
         default: return ''
       }
     },
     handleFilter() {
-      // 筛选由computed属性处理
+    },
+    async handleUse(coupon) {
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认核销',
+          content: `确定要核销卡券"${coupon.name}"吗？`,
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await couponAPI.use(coupon.id)
+                uni.showToast({ title: '核销成功', icon: 'success' })
+                this.loadCoupons()
+              } catch (error) {
+                console.error('核销失败:', error)
+                uni.showToast({ title: '核销失败', icon: 'none' })
+              }
+            }
+          }
+        })
+      } else {
+        if (confirm(`确定要核销卡券"${coupon.name}"吗？`)) {
+          try {
+            await couponAPI.use(coupon.id)
+            alert('核销成功')
+            this.loadCoupons()
+          } catch (error) {
+            console.error('核销失败:', error)
+            alert('核销失败')
+          }
+        }
+      }
+    },
+    async handleDelete(coupon) {
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认删除',
+          content: `确定要删除卡券"${coupon.name}"吗？`,
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await couponAPI.delete(coupon.id)
+                uni.showToast({ title: '删除成功', icon: 'success' })
+                this.loadCoupons()
+              } catch (error) {
+                console.error('删除失败:', error)
+                uni.showToast({ title: '删除失败', icon: 'none' })
+              }
+            }
+          }
+        })
+      } else {
+        if (confirm(`确定要删除卡券"${coupon.name}"吗？`)) {
+          try {
+            await couponAPI.delete(coupon.id)
+            alert('删除成功')
+            this.loadCoupons()
+          } catch (error) {
+            console.error('删除失败:', error)
+            alert('删除失败')
+          }
+        }
+      }
     },
     goBack() {
       this.$router.push('/admin/dashboard')
@@ -168,6 +293,34 @@ export default {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff6b81;
+  margin-bottom: 10px;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #666;
 }
 
 .coupon-container {
@@ -241,6 +394,34 @@ export default {
 .info-row .value.amount {
   font-weight: bold;
   color: #ff6b81;
+}
+
+.coupon-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.use-btn,
+.delete-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.use-btn {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.delete-btn {
+  background-color: #F44336;
+  color: #fff;
 }
 
 .empty {

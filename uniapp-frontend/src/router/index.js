@@ -13,6 +13,7 @@ import CustomerEdit from '../pages/admin/customer/Edit.vue'
 import Checkout from '../pages/admin/checkout/Index.vue'
 import ReservationList from '../pages/admin/reservation/List.vue'
 import ReservationAdd from '../pages/admin/reservation/Add.vue'
+import ReservationEdit from '../pages/admin/reservation/Edit.vue'
 import ScheduleList from '../pages/admin/schedule/List.vue'
 import ScheduleAdd from '../pages/admin/schedule/Add.vue'
 import ScheduleEdit from '../pages/admin/schedule/Edit.vue'
@@ -20,11 +21,16 @@ import ShiftList from '../pages/admin/shift/List.vue'
 import ShiftAdd from '../pages/admin/shift/Add.vue'
 import InventoryList from '../pages/admin/inventory/List.vue'
 import InventoryAdd from '../pages/admin/inventory/Add.vue'
+import InventoryEdit from '../pages/admin/inventory/Edit.vue'
 import CommissionList from '../pages/admin/commission/List.vue'
 import CommissionAdd from '../pages/admin/commission/Add.vue'
 import DashboardData from '../pages/admin/dashboard/Data.vue'
 import ServiceRecords from '../pages/admin/service/Records.vue'
+import ServiceAdd from '../pages/admin/service/Add.vue'
+import ServiceEdit from '../pages/admin/service/Edit.vue'
 import RoomList from '../pages/admin/room/List.vue'
+import RoomAdd from '../pages/admin/room/Add.vue'
+import RoomEdit from '../pages/admin/room/Edit.vue'
 import MemberList from '../pages/admin/member/List.vue'
 import MemberAdd from '../pages/admin/member/Add.vue'
 import CouponList from '../pages/admin/coupon/List.vue'
@@ -35,6 +41,8 @@ import AdminAttendance from '../pages/admin/attendance/Index.vue'
 import AdminSalary from '../pages/admin/salary/Index.vue'
 import AdminVerification from '../pages/admin/verification/Index.vue'
 import AdminGroupPurchase from '../pages/admin/grouppurchase/Index.vue'
+import GroupPurchaseAdd from '../pages/admin/grouppurchase/Add.vue'
+import GroupPurchaseEdit from '../pages/admin/grouppurchase/Edit.vue'
 import StaffAttendance from '../pages/staff/attendance/Index.vue'
 import TodayReservation from '../pages/staff/reservation/Today.vue'
 import StaffPerformance from '../pages/staff/performance/Index.vue'
@@ -58,6 +66,8 @@ import CustomerReservationList from '../pages/customer/reservation/List.vue'
 import CustomerConsumption from '../pages/customer/Consumption.vue'
 import CustomerVerification from '../pages/customer/verification/Index.vue'
 import CustomerGroupPurchase from '../pages/customer/grouppurchase/Index.vue'
+import StaffVerification from '../pages/staff/verification/Index.vue'
+import Payment from '../pages/payment/Payment.vue'
 
 Vue.use(VueRouter)
 
@@ -132,6 +142,11 @@ const routes = [
     component: ReservationAdd
   },
   {
+    path: '/admin/reservation/edit',
+    name: 'ReservationEdit',
+    component: ReservationEdit
+  },
+  {
     path: '/admin/schedule/list',
     name: 'ScheduleList',
     component: ScheduleList
@@ -167,6 +182,11 @@ const routes = [
     component: InventoryAdd
   },
   {
+    path: '/admin/inventory/edit',
+    name: 'InventoryEdit',
+    component: InventoryEdit
+  },
+  {
     path: '/admin/commission/list',
     name: 'CommissionList',
     component: CommissionList
@@ -187,9 +207,29 @@ const routes = [
     component: ServiceRecords
   },
   {
+    path: '/admin/service/add',
+    name: 'ServiceAdd',
+    component: ServiceAdd
+  },
+  {
+    path: '/admin/service/edit',
+    name: 'ServiceEdit',
+    component: ServiceEdit
+  },
+  {
     path: '/admin/room/list',
     name: 'RoomList',
     component: RoomList
+  },
+  {
+    path: '/admin/room/add',
+    name: 'RoomAdd',
+    component: RoomAdd
+  },
+  {
+    path: '/admin/room/edit',
+    name: 'RoomEdit',
+    component: RoomEdit
   },
   {
     path: '/admin/member/list',
@@ -247,6 +287,16 @@ const routes = [
     component: AdminGroupPurchase
   },
   {
+    path: '/admin/grouppurchase/add',
+    name: 'GroupPurchaseAdd',
+    component: GroupPurchaseAdd
+  },
+  {
+    path: '/admin/grouppurchase/edit',
+    name: 'GroupPurchaseEdit',
+    component: GroupPurchaseEdit
+  },
+  {
     path: '/staff/attendance',
     name: 'StaffAttendance',
     component: StaffAttendance
@@ -280,6 +330,11 @@ const routes = [
     path: '/staff/notifications',
     name: 'StaffNotifications',
     component: StaffNotifications
+  },
+  {
+    path: '/staff/verification',
+    name: 'StaffVerification',
+    component: StaffVerification
   },
   {
     path: '/customer/profile',
@@ -360,6 +415,11 @@ const routes = [
     path: '/customer/grouppurchase',
     name: 'CustomerGroupPurchase',
     component: CustomerGroupPurchase
+  },
+  {
+    path: '/payment',
+    name: 'Payment',
+    component: Payment
   }
 ]
 

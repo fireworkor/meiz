@@ -95,6 +95,11 @@ export default {
         }
       } catch (error) {
         console.error('加载顾客列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载顾客列表失败', icon: 'none' })
+        } else {
+          alert('加载顾客列表失败')
+        }
       } finally {
         this.loading = false
       }
@@ -120,14 +125,36 @@ export default {
     goBack() {
       this.$router.push('/admin/dashboard')
     },
-    async handleDelete(id) {
-      if (confirm('确定要删除该顾客吗？')) {
-        try {
-          await customerAPI.delete(id)
-          this.loadCustomers()
-          alert('删除成功')
-        } catch (error) {
-          alert('删除失败')
+    handleDelete(id) {
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认删除',
+          content: '确定要删除该顾客吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await customerAPI.delete(id)
+                this.loadCustomers()
+                uni.showToast({ title: '删除成功', icon: 'success' })
+              } catch (error) {
+                console.error('删除顾客失败:', error)
+                uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+              }
+            }
+          }
+        })
+      } else {
+        if (confirm('确定要删除该顾客吗？')) {
+          (async () => {
+            try {
+              await customerAPI.delete(id)
+              this.loadCustomers()
+              alert('删除成功')
+            } catch (error) {
+              console.error('删除顾客失败:', error)
+              alert('删除失败')
+            }
+          })()
         }
       }
     }

@@ -5,14 +5,25 @@
       <button class="logout-btn" @click="logout">退出登录</button>
     </header>
     <div class="menu-container">
+      <!-- 第一组：日常工作 -->
       <div class="menu-item" @click="navigateTo('todayReservation')">
         <div class="menu-icon">📋</div>
         <div class="menu-label">今日预约</div>
+      </div>
+      <div class="menu-item" @click="navigateTo('checkout')">
+        <div class="menu-icon">💳</div>
+        <div class="menu-label">开单（加钟）</div>
       </div>
       <div class="menu-item" @click="navigateTo('attendance')">
         <div class="menu-icon">📍</div>
         <div class="menu-label">考勤打卡</div>
       </div>
+      <div class="menu-item" @click="navigateTo('verification')">
+        <div class="menu-icon">✓</div>
+        <div class="menu-label">扫码核销</div>
+      </div>
+      
+      <!-- 第二组：个人业绩 -->
       <div class="menu-item" @click="navigateTo('performance')">
         <div class="menu-icon">📊</div>
         <div class="menu-label">我的业绩</div>
@@ -21,10 +32,8 @@
         <div class="menu-icon">📣</div>
         <div class="menu-label">全员营销</div>
       </div>
-      <div class="menu-item" @click="navigateTo('checkout')">
-        <div class="menu-icon">💳</div>
-        <div class="menu-label">开单（加钟）</div>
-      </div>
+      
+      <!-- 第三组：其他功能 -->
       <div class="menu-item" @click="navigateTo('shiftApply')">
         <div class="menu-icon">🔄</div>
         <div class="menu-label">申请调班</div>
@@ -67,6 +76,9 @@ export default {
           break
         case 'notifications':
           this.$router.push('/staff/notifications')
+          break
+        case 'verification':
+          this.$router.push('/staff/verification')
           break
         default:
           alert(`${page}功能开发中`)

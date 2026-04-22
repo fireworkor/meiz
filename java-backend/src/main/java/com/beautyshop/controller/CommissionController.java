@@ -8,6 +8,7 @@ import com.beautyshop.service.CommissionService;
 import com.beautyshop.service.EmployeeService;
 import com.beautyshop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -103,8 +104,8 @@ public class CommissionController {
     @GetMapping("/employee/{employeeId}/date-range")
     public List<Commission> getCommissionsByEmployeeAndDateRange(
             @PathVariable Long employeeId,
-            @RequestParam Date startDate,
-            @RequestParam Date endDate) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         Employee employee = employeeService.getEmployeeById(employeeId).orElse(null);
         if (employee == null) {
             return null;
@@ -115,8 +116,8 @@ public class CommissionController {
     @GetMapping("/employee/{employeeId}/summary")
     public BigDecimal getCommissionSummary(
             @PathVariable Long employeeId,
-            @RequestParam Date startDate,
-            @RequestParam Date endDate) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         Employee employee = employeeService.getEmployeeById(employeeId).orElse(null);
         if (employee == null) {
             return BigDecimal.ZERO;

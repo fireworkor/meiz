@@ -1,5 +1,6 @@
 package com.beautyshop.service;
 
+import com.beautyshop.dto.InventoryRequest;
 import com.beautyshop.entity.Inventory;
 import com.beautyshop.entity.Product;
 import com.beautyshop.repository.InventoryRepository;
@@ -57,6 +58,33 @@ public class InventoryService {
         inventory.setBatchNumber(batchNumber);
         inventory.setSupplier(supplier);
         inventory.setExpiryDate(expiryDate);
+        return inventoryRepository.save(inventory);
+    }
+
+    public Inventory updateInventory(Long id, InventoryRequest request) {
+        Optional<Inventory> existingOpt = inventoryRepository.findById(id);
+        if (!existingOpt.isPresent()) {
+            return null;
+        }
+        Inventory inventory = existingOpt.get();
+        if (request.getProductId() != null) {
+            Product product = productRepository.findById(request.getProductId()).orElse(null);
+            if (product != null) {
+                inventory.setProduct(product);
+            }
+        }
+        if (request.getQuantity() != null) {
+            inventory.setQuantity(request.getQuantity());
+        }
+        if (request.getBatchNumber() != null) {
+            inventory.setBatchNumber(request.getBatchNumber());
+        }
+        if (request.getSupplier() != null) {
+            inventory.setSupplier(request.getSupplier());
+        }
+        if (request.getExpiryDate() != null) {
+            inventory.setExpiryDate(request.getExpiryDate());
+        }
         return inventoryRepository.save(inventory);
     }
 

@@ -147,11 +147,32 @@ export default {
         const id = this.$route.query.id
         const response = await employeeAPI.update(id, this.form)
         if (response.id) {
-          alert('更新成功')
-          this.$router.push('/admin/employee/list')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({
+              title: '更新成功',
+              icon: 'success',
+              duration: 2000
+            })
+            // 延迟跳转，让用户看到成功提示
+            setTimeout(() => {
+              this.$router.push('/admin/employee/list')
+            }, 1500)
+          } else {
+            alert('更新成功')
+            this.$router.push('/admin/employee/list')
+          }
         }
       } catch (error) {
-        alert('更新失败')
+        console.error('更新员工失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({
+            title: '更新失败，请重试',
+            icon: 'none',
+            duration: 2000
+          })
+        } else {
+          alert('更新失败')
+        }
       } finally {
         this.submitting = false
       }

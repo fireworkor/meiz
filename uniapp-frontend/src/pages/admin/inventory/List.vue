@@ -101,6 +101,11 @@ export default {
         }
       } catch (error) {
         console.error('加载库存列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载库存列表失败', icon: 'none' })
+        } else {
+          alert('加载库存列表失败')
+        }
       } finally {
         this.loading = false
       }
@@ -142,16 +147,39 @@ export default {
       })
     },
     async deleteInventory(item) {
-      if (!confirm('确定要删除这个库存记录吗？')) {
-        return
-      }
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认删除',
+          content: '确定要删除这个库存记录吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await inventoryAPI.delete(item.id)
+                this.loadInventories()
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '删除成功', icon: 'success' })
+                }
+              } catch (error) {
+                console.error('删除库存失败:', error)
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+                }
+              }
+            }
+          }
+        })
+      } else {
+        if (!confirm('确定要删除这个库存记录吗？')) {
+          return
+        }
 
-      try {
-        await inventoryAPI.delete(item.id)
-        this.loadInventories()
-        alert('删除成功')
-      } catch (error) {
-        alert('删除失败')
+        try {
+          await inventoryAPI.delete(item.id)
+          this.loadInventories()
+          alert('删除成功')
+        } catch (error) {
+          alert('删除失败')
+        }
       }
     }
   }

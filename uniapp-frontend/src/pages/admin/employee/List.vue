@@ -94,6 +94,11 @@ export default {
         }
       } catch (error) {
         console.error('加载员工列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载员工列表失败', icon: 'none' })
+        } else {
+          alert('加载员工列表失败')
+        }
       } finally {
         this.loading = false
       }
@@ -123,14 +128,36 @@ export default {
     goBack() {
       this.$router.push('/admin/dashboard')
     },
-    async handleDelete(id) {
-      if (confirm('确定要删除该员工吗？')) {
-        try {
-          await employeeAPI.delete(id)
-          this.loadEmployees()
-          alert('删除成功')
-        } catch (error) {
-          alert('删除失败')
+    handleDelete(id) {
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认删除',
+          content: '确定要删除该员工吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await employeeAPI.delete(id)
+                this.loadEmployees()
+                uni.showToast({ title: '删除成功', icon: 'success' })
+              } catch (error) {
+                console.error('删除员工失败:', error)
+                uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+              }
+            }
+          }
+        })
+      } else {
+        if (confirm('确定要删除该员工吗？')) {
+          (async () => {
+            try {
+              await employeeAPI.delete(id)
+              this.loadEmployees()
+              alert('删除成功')
+            } catch (error) {
+              console.error('删除员工失败:', error)
+              alert('删除失败')
+            }
+          })()
         }
       }
     }

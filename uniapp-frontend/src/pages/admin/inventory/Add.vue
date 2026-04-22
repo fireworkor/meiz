@@ -76,9 +76,59 @@ export default {
       }
     },
     async handleSubmit() {
-      if (!this.form.productId || !this.form.quantity) {
-        alert('请填写必填项')
+      // 验证产品选择
+      if (!this.form.productId) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请选择产品', icon: 'none' })
+        } else {
+          alert('请选择产品')
+        }
         return
+      }
+      
+      // 验证数量
+      if (!this.form.quantity || isNaN(this.form.quantity) || this.form.quantity <= 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的数量', icon: 'none' })
+        } else {
+          alert('请输入有效的数量')
+        }
+        return
+      }
+      
+      // 验证批次号
+      if (!this.form.batchNumber) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入批次号', icon: 'none' })
+        } else {
+          alert('请输入批次号')
+        }
+        return
+      }
+      
+      // 验证供应商
+      if (!this.form.supplier) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入供应商', icon: 'none' })
+        } else {
+          alert('请输入供应商')
+        }
+        return
+      }
+      
+      // 验证效期
+      if (this.form.expiryDate) {
+        const expiryDate = new Date(this.form.expiryDate)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        if (expiryDate < today) {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '效期应在未来', icon: 'none' })
+          } else {
+            alert('效期应在未来')
+          }
+          return
+        }
       }
 
       this.loading = true
@@ -92,11 +142,30 @@ export default {
         }
         const response = await inventoryAPI.addStock(requestData)
         if (response.id) {
-          alert('入库成功')
-          this.$router.push('/admin/inventory/list')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '入库成功', icon: 'success' })
+            // 延迟跳转，让用户看到成功提示
+            setTimeout(() => {
+              this.$router.push('/admin/inventory/list')
+            }, 1500)
+          } else {
+            alert('入库成功')
+            this.$router.push('/admin/inventory/list')
+          }
+        } else {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '入库失败', icon: 'none' })
+          } else {
+            alert('入库失败')
+          }
         }
       } catch (error) {
-        alert('入库失败')
+        console.error('入库失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '入库失败，请重试', icon: 'none' })
+        } else {
+          alert('入库失败，请重试')
+        }
       } finally {
         this.loading = false
       }

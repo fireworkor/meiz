@@ -19,19 +19,36 @@ public class CouponService {
     }
 
     public List<Coupon> getAllCoupons() {
-        return couponRepository.findAll();
+        List<Coupon> coupons = couponRepository.findAll();
+        for (Coupon coupon : coupons) {
+            updateExpiredStatus(coupon);
+        }
+        return coupons;
     }
 
     public Optional<Coupon> getCouponById(Long id) {
-        return couponRepository.findById(id);
+        Optional<Coupon> couponOpt = couponRepository.findById(id);
+        if (couponOpt.isPresent()) {
+            Coupon coupon = couponOpt.get();
+            updateExpiredStatus(coupon);
+        }
+        return couponOpt;
     }
 
     public List<Coupon> getCouponsByCustomer(Customer customer) {
-        return couponRepository.findByCustomer(customer);
+        List<Coupon> coupons = couponRepository.findByCustomer(customer);
+        for (Coupon coupon : coupons) {
+            updateExpiredStatus(coupon);
+        }
+        return coupons;
     }
 
     public List<Coupon> getCouponsByStatus(String status) {
-        return couponRepository.findByStatus(status);
+        List<Coupon> coupons = couponRepository.findByStatus(status);
+        for (Coupon coupon : coupons) {
+            updateExpiredStatus(coupon);
+        }
+        return coupons;
     }
 
     public void deleteCoupon(Long id) {
@@ -42,10 +59,22 @@ public class CouponService {
         Optional<Coupon> couponOpt = couponRepository.findById(id);
         if (couponOpt.isPresent()) {
             Coupon coupon = couponOpt.get();
-            coupon.setStatus("已使用");
+            if (!"unused".equals(coupon.getStatus())) {
+                throw new RuntimeException("卡券状态不允许核销");
+            }
+            coupon.setStatus("used");
             coupon.setUsedDate(new Date());
             return couponRepository.save(coupon);
         }
         return null;
+    }
+
+    private void updateExpiredStatus(Coupon coupon) {
+        if (coupon.getExpiryDate() != null && !"used".equals(coupon.getStatus())) {
+            Date now = new Date();
+            if (now.after(coupon.getExpiryDate())) {
+                coupon.setStatus("expired");
+            }
+        }
     }
 }

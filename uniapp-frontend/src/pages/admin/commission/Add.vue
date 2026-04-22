@@ -107,7 +107,11 @@ export default {
     },
     async handleSubmit() {
       if (!this.form.employeeId || !this.form.orderId || !this.form.commissionType || !this.form.amount) {
-        alert('请填写必填项')
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请填写必填项', icon: 'none' })
+        } else {
+          alert('请填写必填项')
+        }
         return
       }
 
@@ -123,11 +127,24 @@ export default {
         }
         const response = await commissionAPI.create(requestData)
         if (response.id) {
-          alert('添加成功')
-          this.$router.push('/admin/commission/list')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '添加成功', icon: 'success' })
+            // 延迟跳转，让用户看到成功提示
+            setTimeout(() => {
+              this.$router.push('/admin/commission/list')
+            }, 1500)
+          } else {
+            alert('添加成功')
+            this.$router.push('/admin/commission/list')
+          }
         }
       } catch (error) {
-        alert('添加失败')
+        console.error('添加提成失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '添加失败，请重试', icon: 'none' })
+        } else {
+          alert('添加失败')
+        }
       } finally {
         this.loading = false
       }

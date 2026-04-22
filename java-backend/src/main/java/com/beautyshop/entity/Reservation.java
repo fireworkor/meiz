@@ -1,5 +1,6 @@
 package com.beautyshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -14,18 +15,22 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "service_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private BeautyService service;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Room room;
 
     private Date reservationDate;

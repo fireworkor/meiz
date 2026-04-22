@@ -164,15 +164,35 @@ export default {
       this.$router.push('/admin/customer/list')
     },
     async handleSubmit() {
+      if (this.loading) return // 防止重复提交
+      
       this.loading = true
       try {
         const response = await customerAPI.create(this.form)
-        if (response.id) {
-          alert('添加成功')
-          this.$router.push('/admin/customer/list')
+        if (response && response.id) {
+          uni.showToast({
+            title: '添加成功',
+            icon: 'success',
+            duration: 2000
+          })
+          // 延迟跳转，让用户看到成功提示
+          setTimeout(() => {
+            this.$router.push('/admin/customer/list')
+          }, 1500)
+        } else {
+          uni.showToast({
+            title: '添加失败',
+            icon: 'none',
+            duration: 2000
+          })
         }
       } catch (error) {
-        alert('添加失败')
+        console.error('添加顾客失败:', error)
+        uni.showToast({
+          title: '添加失败，请重试',
+          icon: 'none',
+          duration: 2000
+        })
       } finally {
         this.loading = false
       }

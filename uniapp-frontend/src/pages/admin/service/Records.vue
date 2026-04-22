@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       records: [],
-      startDate: '',
-      endDate: '',
+      startDate: this.getDefaultStartDate(),
+      endDate: this.getDefaultEndDate(),
       loading: false
     }
   },
@@ -106,6 +106,14 @@ export default {
       if (!date) return ''
       const d = new Date(date)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+    },
+    getDefaultStartDate() {
+      const now = new Date()
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
+    },
+    getDefaultEndDate() {
+      const now = new Date()
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     },
     handleFilter() {
       // 筛选由computed属性处理

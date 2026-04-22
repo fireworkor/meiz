@@ -18,6 +18,14 @@ public class RoomController {
         return roomService.getAllRooms();
     }
 
+    @GetMapping("/search")
+    public List<Room> searchRooms(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String type) {
+        return roomService.searchRooms(keyword, status, type);
+    }
+
     @GetMapping("/{id}")
     public Optional<Room> getRoomById(@PathVariable Long id) {
         return roomService.getRoomById(id);
@@ -37,6 +45,11 @@ public class RoomController {
     @DeleteMapping("/{id}")
     public void deleteRoom(@PathVariable Long id) {
         roomService.deleteRoom(id);
+    }
+
+    @DeleteMapping("/batch")
+    public void deleteRooms(@RequestBody List<Long> ids) {
+        roomService.deleteRooms(ids);
     }
 
     @GetMapping("/status/{status}")

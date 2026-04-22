@@ -134,16 +134,39 @@ export default {
       this.$router.push('/admin/commission/add')
     },
     async settleCommission(commission) {
-      if (!confirm('确定要结算这个提成吗？')) {
-        return
-      }
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认结算',
+          content: '确定要结算这个提成吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await commissionAPI.updateStatus(commission.id, '已结算')
+                this.loadCommissions()
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '结算成功', icon: 'success' })
+                }
+              } catch (error) {
+                console.error('结算失败:', error)
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '结算失败，请重试', icon: 'none' })
+                }
+              }
+            }
+          }
+        })
+      } else {
+        if (!confirm('确定要结算这个提成吗？')) {
+          return
+        }
 
-      try {
-        await commissionAPI.updateStatus(commission.id, '已结算')
-        this.loadCommissions()
-        alert('结算成功')
-      } catch (error) {
-        alert('结算失败')
+        try {
+          await commissionAPI.updateStatus(commission.id, '已结算')
+          this.loadCommissions()
+          alert('结算成功')
+        } catch (error) {
+          alert('结算失败')
+        }
       }
     }
   }

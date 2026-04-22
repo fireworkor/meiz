@@ -29,7 +29,17 @@ public class EmployeeService {
         // 先保存用户信息
         User user = employee.getUser();
         user.setRole("staff");
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        
+        // 将保存后的用户对象设置回员工对象
+        employee.setUser(savedUser);
+        
+        // 同步用户信息到员工表
+        if (savedUser != null) {
+            employee.setName(savedUser.getName());
+            employee.setPhone(savedUser.getPhone());
+        }
+        
         // 再保存员工信息
         return employeeRepository.save(employee);
     }

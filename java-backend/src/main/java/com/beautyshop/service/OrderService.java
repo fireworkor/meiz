@@ -8,6 +8,7 @@ import com.beautyshop.repository.OrderRepository;
 import com.beautyshop.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +66,26 @@ public class OrderService {
     }
 
     public Order saveOrder(Order order) {
+        // 确保订单日期和状态
+        if (order.getOrderDate() == null) {
+            order.setOrderDate(new Date());
+        }
+        if (order.getStatus() == null) {
+            order.setStatus("待支付");
+        }
+
+        // 计算总金额并设置order引用
+        double totalAmount = 0;
+        if (order.getOrderItems() != null) {
+            for (OrderItem item : order.getOrderItems()) {
+                totalAmount += item.getPrice() * item.getQuantity();
+                item.setOrder(order);
+                // 清除OrderItem的id，确保Hibernate将其视为新实体
+                item.setId(null);
+            }
+        }
+        order.setTotalAmount(totalAmount);
+
         return orderRepository.save(order);
     }
 
@@ -80,5 +101,16 @@ public class OrderService {
             return orderRepository.save(order);
         }
         return null;
+    }
+    
+    public BigDecimal getOrderAmount(Long orderId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            if (order.getTotalAmount() != null) {
+                return BigDecimal.valueOf(order.getTotalAmount());
+            }
+        }
+        return BigDecimal.ZERO;
     }
 }

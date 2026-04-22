@@ -75,9 +75,17 @@ export default {
   computed: {
     filteredActivities() {
       if (!this.filterStatus) {
-        return this.activities
+        return this.activities.map(activity => ({
+          ...activity,
+          status: this.getActivityStatus(activity)
+        }))
       }
-      return this.activities.filter(activity => activity.status === this.filterStatus)
+      return this.activities
+        .map(activity => ({
+          ...activity,
+          status: this.getActivityStatus(activity)
+        }))
+        .filter(activity => activity.status === this.filterStatus)
     }
   },
   mounted() {
@@ -102,6 +110,19 @@ export default {
       const d = new Date(date)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     },
+    getActivityStatus(activity) {
+      const now = new Date()
+      const startDate = new Date(activity.startDate)
+      const endDate = new Date(activity.endDate)
+      
+      if (now < startDate) {
+        return '未开始'
+      } else if (now > endDate) {
+        return '已结束'
+      } else {
+        return '进行中'
+      }
+    },
     getStatusClass(status) {
       switch (status) {
         case '进行中': return 'status-active'
@@ -122,25 +143,37 @@ export default {
       this.$router.push(`/admin/marketing/edit/${id}`)
     },
     async handleDelete(id) {
-      try {
-        await uni.showModal({
-          title: '提示',
-          content: '确定要删除该活动吗？',
-          success: async (res) => {
-            if (res.confirm) {
-              try {
-                await marketingActivityAPI.delete(id)
-                uni.showToast({ title: '删除成功', icon: 'success' })
-                this.loadActivities()
-              } catch (error) {
-                console.error('删除失败:', error)
-                uni.showToast({ title: '删除失败', icon: 'none' })
+      if (typeof uni !== 'undefined') {
+        try {
+          await uni.showModal({
+            title: '提示',
+            content: '确定要删除该活动吗？',
+            success: async (res) => {
+              if (res.confirm) {
+                try {
+                  await marketingActivityAPI.delete(id)
+                  uni.showToast({ title: '删除成功', icon: 'success' })
+                  this.loadActivities()
+                } catch (error) {
+                  console.error('删除失败:', error)
+                  uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+                }
               }
             }
+          })
+        } catch (error) {
+          console.error('删除活动失败:', error)
+        }
+      } else {
+        if (confirm('确定要删除该活动吗？')) {
+          try {
+            await marketingActivityAPI.delete(id)
+            alert('删除成功')
+            this.loadActivities()
+          } catch (error) {
+            alert('删除失败')
           }
-        })
-      } catch (error) {
-        console.error('删除活动失败:', error)
+        }
       }
     }
   }

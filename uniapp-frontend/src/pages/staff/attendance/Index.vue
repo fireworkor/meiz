@@ -161,21 +161,32 @@ export default {
               this.todayAttendance = todayResp
               this.todayStatus = todayResp.status || '正常'
             }
+          } else {
+            console.error('未找到当前员工信息')
+            if (typeof uni !== 'undefined') {
+              uni.showToast({ title: '未找到员工信息', icon: 'none' })
+            }
           }
         }
       } catch (error) {
         console.error('加载今日考勤失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载考勤失败', icon: 'none' })
+        }
       }
     },
     async loadAttendanceHistory() {
       try {
-        if (!this.employeeInfo.id) return
+        if (!this.employeeInfo || !this.employeeInfo.id) return
         const response = await attendanceAPI.getByEmployee(this.employeeInfo.id)
         if (Array.isArray(response)) {
           this.attendanceHistory = response.slice(0, 7)
         }
       } catch (error) {
         console.error('加载考勤记录失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载考勤记录失败', icon: 'none' })
+        }
       }
     },
     formatTime(time) {
@@ -201,7 +212,16 @@ export default {
     },
     async handleCheckIn() {
       if (!this.locationValid) {
-        alert('请在门店范围内打卡')
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请在门店范围内打卡', icon: 'none' })
+        }
+        return
+      }
+
+      if (!this.employeeInfo || !this.employeeInfo.id) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '员工信息不存在', icon: 'none' })
+        }
         return
       }
 
@@ -212,21 +232,39 @@ export default {
           location: this.locationText,
           photo: ''
         })
-        if (response.id) {
+        if (response && response.id) {
           this.todayAttendance = response
           this.todayStatus = response.status || '正常'
           this.loadAttendanceHistory()
-          alert('上班打卡成功')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '上班打卡成功', icon: 'success' })
+          }
+        } else {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '打卡失败', icon: 'none' })
+          }
         }
       } catch (error) {
-        alert('打卡失败')
+        console.error('打卡失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '打卡失败，请重试', icon: 'none' })
+        }
       } finally {
         this.loading = false
       }
     },
     async handleCheckOut() {
       if (!this.locationValid) {
-        alert('请在门店范围内打卡')
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请在门店范围内打卡', icon: 'none' })
+        }
+        return
+      }
+
+      if (!this.todayAttendance || !this.todayAttendance.id) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请先上班打卡', icon: 'none' })
+        }
         return
       }
 
@@ -237,13 +275,22 @@ export default {
           location: this.locationText,
           photo: ''
         })
-        if (response.id) {
+        if (response && response.id) {
           this.todayAttendance = response
           this.loadAttendanceHistory()
-          alert('下班打卡成功')
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '下班打卡成功', icon: 'success' })
+          }
+        } else {
+          if (typeof uni !== 'undefined') {
+            uni.showToast({ title: '打卡失败', icon: 'none' })
+          }
         }
       } catch (error) {
-        alert('打卡失败')
+        console.error('打卡失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '打卡失败，请重试', icon: 'none' })
+        }
       } finally {
         this.loading = false
       }

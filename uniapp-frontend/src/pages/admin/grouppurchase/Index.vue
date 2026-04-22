@@ -159,6 +159,7 @@ export default {
       showModal: false,
       modalTitle: '添加团购',
       editingId: null,
+      loading: false,
       form: {
         title: '',
         subtitle: '',
@@ -171,51 +172,11 @@ export default {
         validityDays: 30,
         details: ''
       },
-      groupPurchaseList: [
-        {
-          id: 1,
-          title: '面部护理套餐',
-          subtitle: '深层清洁+补水保湿',
-          originalPrice: 398,
-          groupPrice: 268,
-          minMembers: 2,
-          maxMembers: 5,
-          currentMembers: 3,
-          soldCount: 128,
-          stock: 50,
-          category: 'beauty',
-          status: 'active'
-        },
-        {
-          id: 2,
-          title: '全身SPA套餐',
-          subtitle: '60分钟全身按摩+精油护理',
-          originalPrice: 598,
-          groupPrice: 398,
-          minMembers: 3,
-          maxMembers: 8,
-          currentMembers: 5,
-          soldCount: 86,
-          stock: 30,
-          category: 'spa',
-          status: 'active'
-        },
-        {
-          id: 3,
-          title: '美发套餐',
-          subtitle: '洗剪吹+烫发/染发二选一',
-          originalPrice: 328,
-          groupPrice: 198,
-          minMembers: 2,
-          maxMembers: 6,
-          currentMembers: 2,
-          soldCount: 45,
-          stock: 0,
-          category: 'hair',
-          status: 'sold_out'
-        }
-      ]
+      groupPurchaseList: []
     }
+  },
+  mounted() {
+    this.loadGroupPurchases()
   },
   computed: {
     filteredList() {
@@ -232,12 +193,28 @@ export default {
       return {
         total: this.groupPurchaseList.length,
         active: this.groupPurchaseList.filter(item => item.status === 'active').length,
-        totalSold: this.groupPurchaseList.reduce((sum, item) => sum + item.soldCount, 0),
-        totalParticipants: this.groupPurchaseList.reduce((sum, item) => sum + item.currentMembers, 0)
+        totalSold: this.groupPurchaseList.reduce((sum, item) => sum + (item.soldCount || 0), 0),
+        totalParticipants: this.groupPurchaseList.reduce((sum, item) => sum + (item.currentMembers || 0), 0)
       }
     }
   },
   methods: {
+    async loadGroupPurchases() {
+      this.loading = true
+      try {
+        const response = await groupPurchaseAPI.getAll()
+        if (Array.isArray(response)) {
+          this.groupPurchaseList = response
+        }
+      } catch (error) {
+        console.error('加载团购列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载失败，请重试', icon: 'none' })
+        }
+      } finally {
+        this.loading = false
+      }
+    },
     getStatusName(status) {
       const names = {
         pending: '待开始',
@@ -248,7 +225,10 @@ export default {
       return names[status] || status
     },
     searchGroupPurchases() {
-      uni.showToast({ title: '查询成功', icon: 'success' })
+      // 搜索由computed属性处理
+      if (typeof uni !== 'undefined') {
+        uni.showToast({ title: '查询成功', icon: 'success' })
+      }
     },
     showCreateModal() {
       this.modalTitle = '添加团购'
@@ -284,35 +264,179 @@ export default {
       }
       this.showModal = true
     },
-    saveGroupPurchase() {
+    async saveGroupPurchase() {
+      // 验证表单
       if (!this.form.title) {
-        uni.showToast({ title: '请输入标题', icon: 'none' })
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入标题', icon: 'none' })
+        } else {
+          alert('请输入标题')
+        }
         return
       }
-      if (this.editingId) {
-        uni.showToast({ title: '更新成功', icon: 'success' })
-      } else {
-        uni.showToast({ title: '创建成功', icon: 'success' })
+      
+      if (!this.form.originalPrice || isNaN(this.form.originalPrice) || this.form.originalPrice <= 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的原价', icon: 'none' })
+        } else {
+          alert('请输入有效的原价')
+        }
+        return
       }
-      this.showModal = false
-    },
-    viewDetail(item) {
-      uni.showToast({ title: '查看详情', icon: 'none' })
-    },
-    deleteGroupPurchase(item) {
-      uni.showModal({
-        title: '确认删除',
-        content: '确定要删除该团购吗？',
-        success: (res) => {
-          if (res.confirm) {
-            const index = this.groupPurchaseList.indexOf(item)
-            if (index > -1) {
-              this.groupPurchaseList.splice(index, 1)
+      
+      if (!this.form.groupPrice || isNaN(this.form.groupPrice) || this.form.groupPrice <= 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的团购价', icon: 'none' })
+        } else {
+          alert('请输入有效的团购价')
+        }
+        return
+      }
+      
+      if (this.form.groupPrice >= this.form.originalPrice) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '团购价应低于原价', icon: 'none' })
+        } else {
+          alert('团购价应低于原价')
+        }
+        return
+      }
+      
+      if (!this.form.minMembers || isNaN(this.form.minMembers) || this.form.minMembers <= 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的最少人数', icon: 'none' })
+        } else {
+          alert('请输入有效的最少人数')
+        }
+        return
+      }
+      
+      if (!this.form.maxMembers || isNaN(this.form.maxMembers) || this.form.maxMembers <= 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的最多人数', icon: 'none' })
+        } else {
+          alert('请输入有效的最多人数')
+        }
+        return
+      }
+      
+      if (this.form.minMembers > this.form.maxMembers) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '最少人数应小于等于最多人数', icon: 'none' })
+        } else {
+          alert('最少人数应小于等于最多人数')
+        }
+        return
+      }
+      
+      if (!this.form.stock || isNaN(this.form.stock) || this.form.stock < 0) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的库存', icon: 'none' })
+        } else {
+          alert('请输入有效的库存')
+        }
+        return
+      }
+      
+      if (this.form.validityDays && (isNaN(this.form.validityDays) || this.form.validityDays <= 0)) {
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '请输入有效的有效期天数', icon: 'none' })
+        } else {
+          alert('请输入有效的有效期天数')
+        }
+        return
+      }
+      
+      try {
+        if (this.editingId) {
+          // 更新团购
+          const response = await groupPurchaseAPI.update(this.editingId, this.form)
+          if (response && response.id) {
+            if (typeof uni !== 'undefined') {
+              uni.showToast({ title: '更新成功', icon: 'success' })
+            } else {
+              alert('更新成功')
             }
-            uni.showToast({ title: '删除成功', icon: 'success' })
+            this.showModal = false
+            this.loadGroupPurchases()
+          } else {
+            if (typeof uni !== 'undefined') {
+              uni.showToast({ title: '更新失败', icon: 'none' })
+            } else {
+              alert('更新失败')
+            }
+          }
+        } else {
+          // 创建团购
+          const response = await groupPurchaseAPI.create(this.form)
+          if (response && response.id) {
+            if (typeof uni !== 'undefined') {
+              uni.showToast({ title: '创建成功', icon: 'success' })
+            } else {
+              alert('创建成功')
+            }
+            this.showModal = false
+            this.loadGroupPurchases()
+          } else {
+            if (typeof uni !== 'undefined') {
+              uni.showToast({ title: '创建失败', icon: 'none' })
+            } else {
+              alert('创建失败')
+            }
           }
         }
-      })
+      } catch (error) {
+        console.error('保存团购失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '保存失败，请重试', icon: 'none' })
+        } else {
+          alert('保存失败，请重试')
+        }
+      }
+    },
+    viewDetail(item) {
+      if (typeof uni !== 'undefined') {
+        uni.showToast({ title: '查看详情', icon: 'none' })
+      } else {
+        alert('查看详情')
+      }
+    },
+    deleteGroupPurchase(item) {
+      if (typeof uni !== 'undefined') {
+        uni.showModal({
+          title: '确认删除',
+          content: '确定要删除该团购吗？',
+          success: async (res) => {
+            if (res.confirm) {
+              try {
+                await groupPurchaseAPI.delete(item.id)
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '删除成功', icon: 'success' })
+                }
+                this.loadGroupPurchases()
+              } catch (error) {
+                console.error('删除团购失败:', error)
+                if (typeof uni !== 'undefined') {
+                  uni.showToast({ title: '删除失败，请重试', icon: 'none' })
+                }
+              }
+            }
+          }
+        })
+      } else {
+        if (confirm('确定要删除该团购吗？')) {
+          (async () => {
+            try {
+              await groupPurchaseAPI.delete(item.id)
+              alert('删除成功')
+              this.loadGroupPurchases()
+            } catch (error) {
+              console.error('删除团购失败:', error)
+              alert('删除失败，请重试')
+            }
+          })()
+        }
+      }
     },
     goBack() {
       this.$router.push('/admin/dashboard')

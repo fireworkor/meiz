@@ -7,6 +7,7 @@ import com.beautyshop.entity.Employee;
 import com.beautyshop.service.AttendanceService;
 import com.beautyshop.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +47,8 @@ public class AttendanceController {
     @GetMapping("/employee/{employeeId}/date-range")
     public List<Attendance> getAttendancesByDateRange(
             @PathVariable Long employeeId, 
-            @RequestParam Date startDate, 
-            @RequestParam Date endDate) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, 
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
         Employee employee = employeeService.getEmployeeById(employeeId).orElse(null);
         if (employee == null) {
             return null;

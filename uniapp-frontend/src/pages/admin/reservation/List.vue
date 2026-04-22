@@ -92,7 +92,7 @@ export default {
     return {
       reservations: [],
       filterStatus: '',
-      filterDate: '',
+      filterDate: this.getDefaultDate(),
       loading: false,
       showDialog: false,
       selectedReservation: null,
@@ -112,6 +112,10 @@ export default {
     this.loadReservations()
   },
   methods: {
+    getDefaultDate() {
+      const now = new Date()
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    },
     async loadReservations() {
       this.loading = true
       try {
@@ -121,6 +125,11 @@ export default {
         }
       } catch (error) {
         console.error('加载预约列表失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '加载预约列表失败', icon: 'none' })
+        } else {
+          alert('加载预约列表失败')
+        }
       } finally {
         this.loading = false
       }
@@ -170,9 +179,18 @@ export default {
         await reservationAPI.updateStatus(this.selectedReservation.id, this.newStatus)
         this.loadReservations()
         this.showDialog = false
-        alert('状态更新成功')
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '状态更新成功', icon: 'success' })
+        } else {
+          alert('状态更新成功')
+        }
       } catch (error) {
-        alert('状态更新失败')
+        console.error('更新预约状态失败:', error)
+        if (typeof uni !== 'undefined') {
+          uni.showToast({ title: '状态更新失败，请重试', icon: 'none' })
+        } else {
+          alert('状态更新失败')
+        }
       }
     }
   }

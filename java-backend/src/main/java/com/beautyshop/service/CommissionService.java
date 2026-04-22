@@ -20,7 +20,7 @@ public class CommissionService {
     }
 
     public List<Commission> getAllCommissions() {
-        return commissionRepository.findAll();
+        return commissionRepository.findAllWithFetch();
     }
 
     public Optional<Commission> getCommissionById(Long id) {

@@ -1,5 +1,6 @@
 package com.beautyshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ public class GroupPurchaseMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_purchase_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private GroupPurchase groupPurchase;
 
     @Column(name = "group_purchase_title")
@@ -21,6 +23,7 @@ public class GroupPurchaseMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Customer customer;
 
     @Column(name = "customer_name")

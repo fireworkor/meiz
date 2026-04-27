@@ -145,7 +145,8 @@
 </template>
 
 <script>
-import { verificationAPI, customerAPI } from '@/api/index'
+import { verificationAPI, customerAPI } from '../../../api/index'
+import { toast, modal, navigate, loading } from '../../../utils/common'
 
 export default {
   name: 'AdminVerification',
@@ -254,7 +255,7 @@ export default {
     },
     searchVerifications() {
       this.loadVerifications()
-      uni.showToast({ title: '查询成功', icon: 'success' })
+      toast.show({ title: '查询成功' })
     },
     async loadVerifications() {
       try {
@@ -290,11 +291,11 @@ export default {
     },
     async createVerification() {
       if (!this.form.customerPhone) {
-        uni.showToast({ title: '请输入顾客手机号', icon: 'none' })
+        toast.show({ title: '请输入顾客手机号' })
         return
       }
       if (!this.form.itemName) {
-        uni.showToast({ title: '请输入核销内容', icon: 'none' })
+        toast.show({ title: '请输入核销内容' })
         return
       }
 
@@ -319,12 +320,12 @@ export default {
               res = await verificationAPI.createProduct(data)
             }
             if (res) {
-              uni.showToast({ title: '创建成功', icon: 'success' })
+              toast.show({ title: '创建成功' })
               this.showModal = false
               this.loadVerifications()
             }
           } else {
-            uni.showToast({ title: '顾客不存在', icon: 'none' })
+            toast.show({ title: '顾客不存在' })
           }
         }
       } catch (e) {
@@ -340,7 +341,7 @@ export default {
           status: 'unused'
         }
         this.verificationList.unshift(newVerification)
-        uni.showToast({ title: '创建成功', icon: 'success' })
+        toast.show({ title: '创建成功' })
         this.showModal = false
       }
     },
@@ -355,17 +356,17 @@ export default {
           employeeId: 1
         })
         this.currentItem.status = 'used'
-        uni.showToast({ title: '核销成功', icon: 'success' })
+        toast.show({ title: '核销成功' })
         this.showVerifyModalFlag = false
       } catch (e) {
         this.currentItem.status = 'used'
-        uni.showToast({ title: '核销成功', icon: 'success' })
+        toast.show({ title: '核销成功' })
         this.showVerifyModalFlag = false
       }
     },
     async handleVerify() {
       if (!this.scanCode) {
-        uni.showToast({ title: '请输入核销码', icon: 'none' })
+        toast.show({ title: '请输入核销码' })
         return
       }
 
@@ -375,67 +376,47 @@ export default {
           employeeId: 1
         })
         if (res.success) {
-          uni.showToast({ title: '核销成功', icon: 'success' })
+          toast.show({ title: '核销成功' })
           this.scanCode = ''
           this.loadVerifications()
         } else {
-          uni.showToast({ title: res.message || '核销失败', icon: 'none' })
+          toast.show({ title: res.message || '核销失败' })
         }
       } catch (e) {
         const item = this.verificationList.find(v => v.verificationCode === this.scanCode)
         if (item && item.status === 'unused') {
           item.status = 'used'
-          uni.showToast({ title: '核销成功', icon: 'success' })
+          toast.show({ title: '核销成功' })
           this.scanCode = ''
         } else {
-          uni.showToast({ title: '核销码不存在或已使用', icon: 'none' })
+          toast.show({ title: '核销码不存在或已使用' })
         }
       }
     },
     async cancelVerification(item) {
-      if (typeof uni !== 'undefined') {
-        uni.showModal({
-          title: '确认取消',
-          content: '确定要取消该核销码吗？',
-          success: async (res) => {
-            if (res.confirm) {
-              try {
-                await verificationAPI.cancel(item.id)
-                item.status = 'cancelled'
-                uni.showToast({ title: '已取消', icon: 'success' })
-                setTimeout(() => {
-                  this.loadVerifications()
-                }, 1000)
-              } catch (e) {
-                console.error('取消失败:', e)
-                item.status = 'cancelled'
-                uni.showToast({ title: '已取消', icon: 'success' })
+      modal.show({
+        content: '确定要取消该核销码吗？',
+        success: async (res) => {
+          if (res.confirm) {
+            try {
+              await verificationAPI.cancel(item.id)
+              item.status = 'cancelled'
+              toast.show({ title: '已取消' })
+              setTimeout(() => {
                 this.loadVerifications()
-              }
+              }, 1000)
+            } catch (e) {
+              console.error('取消失败:', e)
+              item.status = 'cancelled'
+              toast.show({ title: '已取消' })
+              this.loadVerifications()
             }
           }
-        })
-      } else {
-        if (confirm('确定要取消该核销码吗？')) {
-          try {
-            await verificationAPI.cancel(item.id)
-            item.status = 'cancelled'
-            alert('已取消')
-            this.loadVerifications()
-          } catch (e) {
-            console.error('取消失败:', e)
-            item.status = 'cancelled'
-            alert('已取消')
-            this.loadVerifications()
-          }
         }
-      }
+      })
     },
     viewDetail(item) {
-      uni.showToast({
-        title: `核销码: ${item.verificationCode}`,
-        icon: 'none'
-      })
+      toast.show({ title: `核销码: ${item.verificationCode}` })
     },
     goBack() {
       this.$router.push('/admin/dashboard')

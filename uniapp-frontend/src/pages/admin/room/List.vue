@@ -103,6 +103,7 @@
 
 <script>
 import { roomAPI } from '../../../api/index'
+import { toast, modal, navigate } from '../../../utils/common'
 
 export default {
   name: 'RoomList',
@@ -142,11 +143,7 @@ export default {
         }
       } catch (error) {
         console.error('加载房间列表失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '加载房间列表失败', icon: 'none' })
-        } else {
-          alert('加载房间列表失败')
-        }
+        toast.show({ title: '加载房间列表失败' })
       } finally {
         this.loading = false
       }
@@ -199,85 +196,48 @@ export default {
       try {
         await roomAPI.updateStatus(roomId, status)
         this.loadRooms()
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '状态已更新', icon: 'success' })
-        }
+        toast.show({ title: '状态已更新' })
       } catch (error) {
         console.error('更新状态失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '更新失败', icon: 'none' })
-        }
+        toast.show({ title: '更新失败' })
       }
     },
     deleteRoom(room) {
-      if (typeof uni !== 'undefined') {
-        uni.showModal({
-          title: '确认删除',
-          content: `确定要删除房间 "${room.name}" 吗？`,
-          success: async (res) => {
-            if (res.confirm) {
-              try {
-                await roomAPI.delete(room.id)
-                this.loadRooms()
-                uni.showToast({ title: '删除成功', icon: 'success' })
-              } catch (error) {
-                console.error('删除房间失败:', error)
-                uni.showToast({ title: '删除失败，请重试', icon: 'none' })
-              }
-            }
-          }
-        })
-      } else {
-        if (confirm(`确定要删除房间 "${room.name}" 吗？`)) {
-          (async () => {
+      modal.show({
+        content: `确定要删除房间 "${room.name}" 吗？`,
+        success: async (res) => {
+          if (res.confirm) {
             try {
               await roomAPI.delete(room.id)
               this.loadRooms()
-              alert('删除成功')
+              toast.show({ title: '删除成功' })
             } catch (error) {
               console.error('删除房间失败:', error)
-              alert('删除失败，请重试')
+              toast.show({ title: '删除失败，请重试' })
             }
-          })()
+          }
         }
-      }
+      })
     },
     handleBatchDelete() {
       if (this.selectedRooms.length === 0) return
       
-      if (typeof uni !== 'undefined') {
-        uni.showModal({
-          title: '确认批量删除',
-          content: `确定要删除选中的 ${this.selectedRooms.length} 个房间吗？`,
-          success: async (res) => {
-            if (res.confirm) {
-              try {
-                await roomAPI.batchDelete(this.selectedRooms)
-                this.selectedRooms = []
-                this.loadRooms()
-                uni.showToast({ title: '批量删除成功', icon: 'success' })
-              } catch (error) {
-                console.error('批量删除房间失败:', error)
-                uni.showToast({ title: '批量删除失败，请重试', icon: 'none' })
-              }
-            }
-          }
-        })
-      } else {
-        if (confirm(`确定要删除选中的 ${this.selectedRooms.length} 个房间吗？`)) {
-          (async () => {
+      modal.show({
+        content: `确定要删除选中的 ${this.selectedRooms.length} 个房间吗？`,
+        success: async (res) => {
+          if (res.confirm) {
             try {
               await roomAPI.batchDelete(this.selectedRooms)
               this.selectedRooms = []
               this.loadRooms()
-              alert('批量删除成功')
+              toast.show({ title: '批量删除成功' })
             } catch (error) {
               console.error('批量删除房间失败:', error)
-              alert('批量删除失败，请重试')
+              toast.show({ title: '批量删除失败，请重试' })
             }
-          })()
+          }
         }
-      }
+      })
     }
   }
 }

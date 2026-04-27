@@ -74,6 +74,7 @@
 
 <script>
 import { verificationAPI } from '@/api/index'
+import { toast, modal, navigate, loading, clipboard } from '@/utils/common'
 
 export default {
   name: 'CustomerVerification',
@@ -183,30 +184,30 @@ export default {
       return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
     },
     copyCode(code) {
-      uni.setClipboardData({
+      clipboard.setData({
         data: code,
-        success: () => {
-          uni.showToast({ title: '已复制到剪贴板', icon: 'success' })
+        success: function() {
+          toast.show({ title: '已复制到剪贴板' })
         }
       })
     },
     handleScan() {
       if (!this.scanCode) {
-        uni.showToast({ title: '请输入核销码', icon: 'none' })
+        toast.show({ title: '请输入核销码' })
         return
       }
 
       const item = this.verificationList.find(v => v.verificationCode === this.scanCode)
       if (item) {
         if (item.status === 'unused') {
-          uni.showToast({ title: '该核销码可在门店使用', icon: 'success' })
+          toast.show({ title: '该核销码可在门店使用' })
         } else if (item.status === 'used') {
-          uni.showToast({ title: '该核销码已使用', icon: 'none' })
+          toast.show({ title: '该核销码已使用' })
         } else {
-          uni.showToast({ title: '该核销码已取消', icon: 'none' })
+          toast.show({ title: '该核销码已取消' })
         }
       } else {
-        uni.showToast({ title: '未找到该核销码', icon: 'none' })
+        toast.show({ title: '未找到该核销码' })
       }
     },
     goBack() {

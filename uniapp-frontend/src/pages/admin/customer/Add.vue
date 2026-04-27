@@ -10,20 +10,12 @@
         <div class="form-section">
           <h3>基本信息</h3>
           <div class="form-group">
-            <label>用户名 *</label>
-            <input type="text" v-model="form.user.username" placeholder="请输入用户名" required>
-          </div>
-          <div class="form-group">
-            <label>密码 *</label>
-            <input type="password" v-model="form.user.password" placeholder="请输入密码" required>
-          </div>
-          <div class="form-group">
             <label>姓名 *</label>
-            <input type="text" v-model="form.user.name" placeholder="请输入姓名" required>
+            <input type="text" v-model="form.name" placeholder="请输入姓名" required>
           </div>
           <div class="form-group">
             <label>手机号 *</label>
-            <input type="tel" v-model="form.user.phone" placeholder="请输入手机号" required>
+            <input type="tel" v-model="form.phone" placeholder="请输入手机号" required>
           </div>
         </div>
 
@@ -129,18 +121,15 @@
 
 <script>
 import { customerAPI } from '../../../api/index'
+import { toast, navigate } from '../../../utils/common'
 
 export default {
   name: 'CustomerAdd',
   data() {
     return {
       form: {
-        user: {
-          username: '',
-          password: '',
-          name: '',
-          phone: ''
-        },
+        name: '',
+        phone: '',
         gender: '',
         birthday: '',
         wechat: '',
@@ -170,7 +159,7 @@ export default {
       try {
         const response = await customerAPI.create(this.form)
         if (response && response.id) {
-          uni.showToast({
+          toast.show({
             title: '添加成功',
             icon: 'success',
             duration: 2000
@@ -180,7 +169,7 @@ export default {
             this.$router.push('/admin/customer/list')
           }, 1500)
         } else {
-          uni.showToast({
+          toast.show({
             title: '添加失败',
             icon: 'none',
             duration: 2000
@@ -188,7 +177,7 @@ export default {
         }
       } catch (error) {
         console.error('添加顾客失败:', error)
-        uni.showToast({
+        toast.show({
           title: '添加失败，请重试',
           icon: 'none',
           duration: 2000

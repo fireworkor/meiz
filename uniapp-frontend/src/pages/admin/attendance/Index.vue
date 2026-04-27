@@ -80,6 +80,7 @@
 
 <script>
 import { attendanceAPI, employeeAPI } from '../../../api/index'
+import { toast, modal, navigate } from '../../../utils/common'
 
 export default {
   name: 'AdminAttendance',
@@ -138,18 +139,14 @@ export default {
         }
       } catch (error) {
         console.error('加载员工列表失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '加载员工列表失败', icon: 'none' })
-        }
+        toast.show({ title: '加载员工列表失败' })
       } finally {
         this.loadingEmployees = false
       }
     },
     async searchAttendance() {
       if (!this.selectedEmployee) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请选择员工', icon: 'none' })
-        }
+        toast.show({ title: '请选择员工' })
         return
       }
       
@@ -212,23 +209,17 @@ export default {
             }
           })
           
-          if (typeof uni !== 'undefined') {
-            uni.showToast({ title: '查询成功', icon: 'success' })
-          }
+          toast.show({ title: '查询成功' })
         }
       } catch (error) {
         console.error('查询考勤失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '查询失败，请重试', icon: 'none' })
-        }
+        toast.show({ title: '查询失败，请重试' })
       } finally {
         this.loading = false
       }
     },
     editAttendance(item) {
-      if (typeof uni !== 'undefined') {
-        uni.showToast({ title: '修改考勤记录', icon: 'none' })
-      }
+      toast.show({ title: '修改考勤记录' })
     },
     goBack() {
       this.$router.push('/admin/dashboard')

@@ -54,6 +54,9 @@
 </template>
 
 <script>
+import { verificationAPI } from '../../../api/index'
+import { toast, modal, navigate, loading } from '../../../utils/common'
+
 export default {
   name: 'StaffVerification',
   data() {
@@ -92,22 +95,19 @@ export default {
     },
     handleVerify() {
       if (!this.scanCode) {
-        uni.showToast({ title: '请输入核销码', icon: 'none' });
+        toast.show({ title: '请输入核销码' });
         return;
       }
       
       // 模拟核销过程
-      uni.showLoading({ title: '核销中...' });
-      
+      loading.show({ title: '核销中...' });
       setTimeout(() => {
-        uni.hideLoading();
+        loading.hide();
         
         // 模拟核销成功
-        uni.showModal({
-          title: '核销成功',
+        modal.show({
           content: `核销码 ${this.scanCode} 验证成功！`,
-          showCancel: false,
-          success: () => {
+          success: (res) => {
             // 添加到今日记录
             this.todayVerifications.unshift({
               id: Date.now(),

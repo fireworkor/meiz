@@ -131,6 +131,7 @@
 
 <script>
 import { roomAPI } from '@/api'
+import { toast, modal, navigate } from '@/utils/common'
 
 export default {
   data() {
@@ -165,11 +166,7 @@ export default {
   },
   methods: {
     goBack() {
-      if (typeof uni !== 'undefined') {
-        uni.navigateBack()
-      } else {
-        window.history.back()
-      }
+      navigate.back()
     },
     getTypeLabel(value) {
       const type = this.typeOptions.find(t => t.value === value)
@@ -191,38 +188,22 @@ export default {
       if (this.loading) return
       
       if (!this.formData.name) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请输入房间名称', icon: 'none' })
-        } else {
-          alert('请输入房间名称')
-        }
+        toast.show({ title: '请输入房间名称' })
         return
       }
       
       if (!this.formData.type) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请选择房间类型', icon: 'none' })
-        } else {
-          alert('请选择房间类型')
-        }
+        toast.show({ title: '请选择房间类型' })
         return
       }
       
       if (!this.formData.capacity || isNaN(this.formData.capacity) || this.formData.capacity <= 0) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请输入有效的容纳人数', icon: 'none' })
-        } else {
-          alert('请输入有效的容纳人数')
-        }
+        toast.show({ title: '请输入有效的容纳人数' })
         return
       }
       
       if (!this.formData.status) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请选择房间状态', icon: 'none' })
-        } else {
-          alert('请选择房间状态')
-        }
+        toast.show({ title: '请选择房间状态' })
         return
       }
       
@@ -230,41 +211,16 @@ export default {
       try {
         const res = await roomAPI.create(this.formData)
         if (res && res.id) {
-          if (typeof uni !== 'undefined') {
-            uni.showToast({
-              title: '添加成功',
-              icon: 'success',
-              duration: 2000
-            })
-            setTimeout(() => {
-              uni.navigateBack()
-            }, 1500)
-          } else {
-            alert('添加成功')
-            window.history.back()
-          }
+          toast.show({ title: '添加成功' })
+          setTimeout(() => {
+            navigate.back()
+          }, 1500)
         } else {
-          if (typeof uni !== 'undefined') {
-            uni.showToast({
-              title: '添加失败',
-              icon: 'none',
-              duration: 2000
-            })
-          } else {
-            alert('添加失败')
-          }
+          toast.show({ title: '添加失败' })
         }
       } catch (error) {
         console.error('添加房间失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({
-            title: '添加失败，请重试',
-            icon: 'none',
-            duration: 2000
-          })
-        } else {
-          alert('添加失败，请重试')
-        }
+        toast.show({ title: '添加失败，请重试' })
       } finally {
         this.loading = false
       }

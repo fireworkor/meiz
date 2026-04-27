@@ -82,6 +82,7 @@
 
 <script>
 import { attendanceAPI, employeeAPI } from '../../../api/index'
+import { toast, modal, navigate } from '../../../utils/common'
 
 export default {
   name: 'StaffAttendance',
@@ -163,16 +164,12 @@ export default {
             }
           } else {
             console.error('未找到当前员工信息')
-            if (typeof uni !== 'undefined') {
-              uni.showToast({ title: '未找到员工信息', icon: 'none' })
-            }
+            toast.show({ title: '未找到员工信息' })
           }
         }
       } catch (error) {
         console.error('加载今日考勤失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '加载考勤失败', icon: 'none' })
-        }
+        toast.show({ title: '加载考勤失败' })
       }
     },
     async loadAttendanceHistory() {
@@ -184,9 +181,7 @@ export default {
         }
       } catch (error) {
         console.error('加载考勤记录失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '加载考勤记录失败', icon: 'none' })
-        }
+        toast.show({ title: '加载考勤记录失败' })
       }
     },
     formatTime(time) {
@@ -213,15 +208,13 @@ export default {
     async handleCheckIn() {
       if (!this.locationValid) {
         if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请在门店范围内打卡', icon: 'none' })
+          toast.show({ title: '请在门店范围内打卡' })
         }
         return
       }
 
       if (!this.employeeInfo || !this.employeeInfo.id) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '员工信息不存在', icon: 'none' })
-        }
+        toast.show({ title: '员工信息不存在' })
         return
       }
 
@@ -236,18 +229,14 @@ export default {
           this.todayAttendance = response
           this.todayStatus = response.status || '正常'
           this.loadAttendanceHistory()
-          if (typeof uni !== 'undefined') {
-            uni.showToast({ title: '上班打卡成功', icon: 'success' })
-          }
+          toast.show({ title: '上班打卡成功' })
         } else {
-          if (typeof uni !== 'undefined') {
-            uni.showToast({ title: '打卡失败', icon: 'none' })
-          }
+          toast.show({ title: '打卡失败' })
         }
       } catch (error) {
         console.error('打卡失败:', error)
         if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '打卡失败，请重试', icon: 'none' })
+          toast.show({ title: '打卡失败，请重试' })
         }
       } finally {
         this.loading = false
@@ -256,15 +245,13 @@ export default {
     async handleCheckOut() {
       if (!this.locationValid) {
         if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请在门店范围内打卡', icon: 'none' })
+          toast.show({ title: '请在门店范围内打卡' })
         }
         return
       }
 
       if (!this.todayAttendance || !this.todayAttendance.id) {
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '请先上班打卡', icon: 'none' })
-        }
+        toast.show({ title: '请先上班打卡' })
         return
       }
 
@@ -278,18 +265,14 @@ export default {
         if (response && response.id) {
           this.todayAttendance = response
           this.loadAttendanceHistory()
-          if (typeof uni !== 'undefined') {
-            uni.showToast({ title: '下班打卡成功', icon: 'success' })
-          }
+          toast.show({ title: '下班打卡成功' })
         } else {
-          if (typeof uni !== 'undefined') {
-            uni.showToast({ title: '打卡失败', icon: 'none' })
-          }
+          toast.show({ title: '打卡失败' })
         }
       } catch (error) {
         console.error('打卡失败:', error)
         if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '打卡失败，请重试', icon: 'none' })
+          toast.show({ title: '打卡失败，请重试' })
         }
       } finally {
         this.loading = false

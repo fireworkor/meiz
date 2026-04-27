@@ -85,6 +85,7 @@
 
 <script>
 import { reservationAPI } from '../../../api/index'
+import { toast, modal, navigate, loading } from '../../../utils/common'
 
 export default {
   name: 'ReservationList',
@@ -125,11 +126,7 @@ export default {
         }
       } catch (error) {
         console.error('加载预约列表失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '加载预约列表失败', icon: 'none' })
-        } else {
-          alert('加载预约列表失败')
-        }
+        toast.show({ title: '加载预约列表失败' })
       } finally {
         this.loading = false
       }
@@ -179,18 +176,10 @@ export default {
         await reservationAPI.updateStatus(this.selectedReservation.id, this.newStatus)
         this.loadReservations()
         this.showDialog = false
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '状态更新成功', icon: 'success' })
-        } else {
-          alert('状态更新成功')
-        }
+        toast.show({ title: '状态更新成功' })
       } catch (error) {
         console.error('更新预约状态失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({ title: '状态更新失败，请重试', icon: 'none' })
-        } else {
-          alert('状态更新失败')
-        }
+        toast.show({ title: '状态更新失败，请重试' })
       }
     }
   }

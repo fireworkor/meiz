@@ -32,6 +32,7 @@ public class CustomerService {
         user.setUsername(request.getPhone());
         user.setName(request.getName());
         user.setPhone(request.getPhone());
+        user.setPassword("123456"); // 默认密码
         user.setRole("customer");
         userRepository.save(user);
 

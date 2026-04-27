@@ -131,6 +131,7 @@
 
 <script>
 import { roomAPI } from '@/api'
+import { toast, modal, navigate } from '@/utils/common'
 
 export default {
   data() {
@@ -172,7 +173,7 @@ export default {
   },
   methods: {
     goBack() {
-      uni.navigateBack()
+      navigate.back()
     },
     getTypeLabel(value) {
       const type = this.typeOptions.find(t => t.value === value)
@@ -198,11 +199,11 @@ export default {
           this.selectedType = res.data.type
           this.selectedStatus = res.data.status
         } else {
-          uni.showToast({ title: '加载失败', icon: 'none' })
+          toast.show({ title: '加载失败' })
         }
       } catch (error) {
         console.error('加载房间详情失败:', error)
-        uni.showToast({ title: '加载失败', icon: 'none' })
+        toast.show({ title: '加载失败' })
       }
     },
     confirmType() {
@@ -215,7 +216,7 @@ export default {
     },
     async handleSubmit() {
       if (!this.formData.name || !this.formData.type || !this.formData.capacity || !this.formData.status) {
-        uni.showToast({ title: '请填写所有必填项', icon: 'none' })
+        toast.show({ title: '请填写所有必填项' })
         return
       }
       
@@ -223,16 +224,16 @@ export default {
       try {
         const res = await roomAPI.update(this.roomId, this.formData)
         if (res && res.id) {
-          uni.showToast({ title: '修改成功', icon: 'success' })
+          toast.show({ title: '修改成功' })
           setTimeout(() => {
-            uni.navigateBack()
+            navigate.back()
           }, 1000)
         } else {
-          uni.showToast({ title: res.message || '修改失败', icon: 'none' })
+          toast.show({ title: res.message || '修改失败' })
         }
       } catch (error) {
         console.error('修改房间失败:', error)
-        uni.showToast({ title: '修改失败', icon: 'none' })
+        toast.show({ title: '修改失败' })
       } finally {
         this.loading = false
       }

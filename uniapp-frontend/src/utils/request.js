@@ -1,4 +1,17 @@
-const API_BASE_URL = 'http://localhost:8080'
+// 动态获取API基础URL，支持IPv4和IPv6
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol || 'http:'
+    let hostname = window.location.hostname
+    // 如果hostname已经包含方括号（浏览器返回的IPv6格式），则直接使用
+    // 如果不包含方括号但包含冒号（纯IPv6地址），则添加方括号
+    const formattedHostname = hostname.includes('[') ? hostname : (hostname.includes(':') ? `[${hostname}]` : hostname)
+    return `${protocol}//${formattedHostname}:8088`
+  }
+  return 'http://localhost:8088'
+}
+
+const API_BASE_URL = getApiBaseUrl()
 
 export const request = {
   async post(url, data) {

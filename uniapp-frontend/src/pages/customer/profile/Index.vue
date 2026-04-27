@@ -80,6 +80,9 @@
 </template>
 
 <script>
+import { customerAPI } from '@/api/index'
+import { toast, modal, navigate, loading, clipboard } from '@/utils/common'
+
 export default {
   name: 'CustomerProfile',
   data() {
@@ -101,7 +104,7 @@ export default {
   },
   methods: {
     editInfo(field) {
-      uni.showToast({ title: `编辑${this.getFieldName(field)}`, icon: 'none' })
+      toast.show({ title: `编辑${this.getFieldName(field)}` })
     },
     getFieldName(field) {
       const names = {
@@ -115,18 +118,17 @@ export default {
       return names[field] || field
     },
     changePassword() {
-      uni.showToast({ title: '修改密码功能开发中', icon: 'none' })
+      toast.show({ title: '修改密码功能开发中' })
     },
     bindWechat() {
-      uni.showToast({ title: '绑定微信功能开发中', icon: 'none' })
+      toast.show({ title: '绑定微信功能开发中' })
     },
     deleteAccount() {
-      uni.showModal({
-        title: '确认注销',
-        content: '注销账号后，您的所有数据将被删除，此操作不可恢复',
+      modal.show({
+        content: '注销账号后，所有数据将被清除且无法恢复，确定要继续吗？',
         success: (res) => {
           if (res.confirm) {
-            uni.showToast({ title: '账号注销功能开发中', icon: 'none' })
+            toast.show({ title: '账号注销功能开发中' })
           }
         }
       })

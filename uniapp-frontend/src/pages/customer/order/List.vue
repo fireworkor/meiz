@@ -69,6 +69,9 @@
 </template>
 
 <script>
+import { orderAPI } from '@/api/index'
+import { toast, modal, navigate, loading } from '@/utils/common'
+
 export default {
   name: 'OrderList',
   data() {
@@ -168,41 +171,39 @@ export default {
       return statusMap[status] || status
     },
     cancelOrder(order) {
-      uni.showModal({
-        title: '确认取消',
+      modal.show({
         content: '确定要取消该订单吗？',
         success: (res) => {
           if (res.confirm) {
             order.status = 'cancelled'
-            uni.showToast({ title: '订单已取消', icon: 'success' })
+            toast.show({ title: '订单已取消' })
           }
         }
       })
     },
     payOrder(order) {
-      uni.showToast({ title: '正在发起支付...', icon: 'none' })
+      toast.show({ title: '正在发起支付...' })
       setTimeout(() => {
         order.status = 'paid'
-        uni.showToast({ title: '支付成功', icon: 'success' })
+        toast.show({ title: '支付成功' })
       }, 1500)
     },
     confirmReceive(order) {
-      uni.showModal({
-        title: '确认收货',
+      modal.show({
         content: '确认已收到货物吗？',
         success: (res) => {
           if (res.confirm) {
             order.status = 'completed'
-            uni.showToast({ title: '已确认收货', icon: 'success' })
+            toast.show({ title: '已确认收货' })
           }
         }
       })
     },
     reviewOrder(order) {
-      uni.showToast({ title: '跳转到评价页面', icon: 'none' })
+      toast.show({ title: '跳转到评价页面' })
     },
     viewDetail(order) {
-      uni.showToast({ title: '查看订单详情', icon: 'none' })
+      toast.show({ title: '查看订单详情' })
     },
     goToMall() {
       this.$router.push('/customer/mall')

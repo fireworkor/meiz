@@ -10,16 +10,12 @@
         <div class="form-section">
           <h3>基本信息</h3>
           <div class="form-group">
-            <label>用户名</label>
-            <input type="text" v-model="form.user.username" disabled>
-          </div>
-          <div class="form-group">
             <label>姓名 *</label>
-            <input type="text" v-model="form.user.name" required>
+            <input type="text" v-model="form.name" required>
           </div>
           <div class="form-group">
             <label>手机号 *</label>
-            <input type="tel" v-model="form.user.phone" required>
+            <input type="tel" v-model="form.phone" required>
           </div>
         </div>
 
@@ -127,17 +123,15 @@
 
 <script>
 import { customerAPI } from '../../../api/index'
+import { toast, navigate } from '../../../utils/common'
 
 export default {
   name: 'CustomerEdit',
   data() {
     return {
       form: {
-        user: {
-          username: '',
-          name: '',
-          phone: ''
-        },
+        name: '',
+        phone: '',
         gender: '',
         birthday: '',
         wechat: '',
@@ -171,7 +165,25 @@ export default {
       try {
         const response = await customerAPI.getById(id)
         if (response) {
-          this.form = response
+          // 转换嵌套结构为扁平结构
+          this.form = {
+            name: response.user ? response.user.name : response.name,
+            phone: response.user ? response.user.phone : response.phone,
+            gender: response.gender,
+            birthday: response.birthday,
+            wechat: response.wechat,
+            occupation: response.occupation,
+            sourceChannel: response.sourceChannel,
+            sourcePlatform: response.sourcePlatform,
+            skinType: response.skinType,
+            allergyHistory: response.allergyHistory,
+            skinProblems: response.skinProblems,
+            preferredItems: response.preferredItems,
+            preferredEmployee: response.preferredEmployee,
+            preferredTime: response.preferredTime,
+            averageSpending: response.averageSpending,
+            tags: response.tags
+          }
         }
       } catch (error) {
         console.error('加载顾客信息失败:', error)
@@ -187,8 +199,8 @@ export default {
       try {
         const id = this.$route.query.id
         const requestData = {
-          name: this.form.user.name,
-          phone: this.form.user.phone,
+          name: this.form.name,
+          phone: this.form.phone,
           gender: this.form.gender,
           birthday: this.form.birthday,
           wechat: this.form.wechat,
@@ -206,31 +218,14 @@ export default {
         }
         const response = await customerAPI.update(id, requestData)
         if (response.id) {
-          if (typeof uni !== 'undefined') {
-            uni.showToast({
-              title: '更新成功',
-              icon: 'success',
-              duration: 2000
-            })
-            setTimeout(() => {
-              this.$router.push('/admin/customer/list')
-            }, 1500)
-          } else {
-            alert('更新成功')
+          toast.show({ title: '更新成功' })
+          setTimeout(() => {
             this.$router.push('/admin/customer/list')
-          }
+          }, 1500)
         }
       } catch (error) {
         console.error('更新顾客失败:', error)
-        if (typeof uni !== 'undefined') {
-          uni.showToast({
-            title: '更新失败，请重试',
-            icon: 'none',
-            duration: 2000
-          })
-        } else {
-          alert('更新失败')
-        }
+        toast.show({ title: '更新失败，请重试' })
       } finally {
         this.submitting = false
       }
